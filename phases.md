@@ -357,45 +357,51 @@ Mobile files for this phase:
 
 ---
 
-## W5 — Practice tests (4–5 days)
+## W5 — Practice tests (4–5 days) — **done**, see notes at the end of this section
 
 Ports mobile Phase 3. Two modes: **Practice** (instant answer + explanation) and **Timed test** (1 min/question).
 
-- [ ] Routes `/practice/:topicId` (setup), `/practice/session`, `/practice/result` (guards redirect when there is no session / result)
-- [ ] Setup: mode, 5 or 10 questions, free-questions-left line, resume banner, recent attempts
-- [ ] Session: question card, options, progress, prev / next / skip, bookmark; timed adds countdown, palette (side panel on desktop, sheet on phone), mark for review, clear answer, auto-submit, leave guard
-- [ ] **Web additions:** keyboard shortcuts (`1–4` choose, `←/→` move, `M` mark, `Enter` next), `beforeunload` guard while a session is open, session survives reload (persisted `session`)
-- [ ] Result: score, accuracy, correct / wrong / skipped, time, review with explanations, retry missed, new test
-- [ ] Daily question limit from entitlements; upgrade prompt at zero
-- [ ] AI-generated source switch + "AI" badge + "Report wrong question" (mobile Phase 6A) belong here in the UI but need W7/W8 services; leave the switch hidden behind a flag until the mock `fetchAiQuestions` is wired
-- [ ] Port: `practice.test.js`, `practiceFlow` integration test, `test-utils/practice.js`
+- [x] Routes `/practice/:topicId` (setup), `/practice/session`, `/practice/result`. No separate guard component: a session page with no session sends the visitor to `/tests`; a result page with no result says so (as mobile did)
+- [x] Setup: mode, 5 or 10 questions, question source (bank / AI-generated), free-questions-left line, resume banner, recent attempts
+- [x] Session: question card, options, progress, previous / next / skip, bookmark; timed test adds the countdown, mark for review, clear answer, auto-submit at zero and the palette (a side panel from 1024 px, a sheet on phones)
+- [x] **Web additions:** keyboard shortcuts (`1–5` / `A–E` choose, `←` `→` / `P` `N` move, `M` marks in a timed test), leave guard (header arrow, browser Back, sidebar links all ask first), tab-close guard for **timed** tests, the session survives a reload
+- [x] Result: score, accuracy, correct / wrong / skipped, time, review with explanations, filters, retry missed, new test, Done
+- [x] Daily question limit from entitlements: the set is cut to what is left; at zero the Start button becomes "Daily limit reached · See Pro" and opens the paywall
+- [x] AI-generated source + "AI" badge + "Report wrong question": shown, not hidden. The mock `fetchAiQuestions` already exists in the copied service, so there was nothing to wait for
+- [x] Port: `practice.test.js` (W1), `practiceFlow` → `tests/integration/practicePages.test.jsx` (32 tests), `test-utils/practice.js` → `tests/utils/practice.js`
 
 Mobile files for this phase:
 
-**Copy as is (pure JS)** (5)
+**Copy as is (pure JS)** (5) — all done in W1
 
-*practice*
-
-- [x] `features/practice/services/practiceService.js`
-- [x] `features/practice/store/practiceSlice.js`
-- [x] `features/practice/utils/scoring.js`
-
-*store*
-
-- [x] `store/selectors/attemptStatsSelectors.js`
-- [x] `store/selectors/practiceSelectors.js`
+- [x] `features/practice/services/practiceService.js`, `store/practiceSlice.js`, `utils/scoring.js`
+- [x] `store/selectors/attemptStatsSelectors.js`, `store/selectors/practiceSelectors.js`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (6)
 
-- [ ] `features/practice/components/AiBadge.jsx`
+- [x] `features/practice/components/AiBadge.jsx`
 - [x] `features/practice/components/PracticeCard.jsx` (done in W4)
-- [ ] `features/practice/components/ReportQuestionButton.jsx`
-- [ ] `features/practice/screens/PracticeResultScreen.jsx` → `features/practice/pages/PracticeResultPage.jsx`
-- [ ] `features/practice/screens/PracticeSessionScreen.jsx` → `features/practice/pages/PracticeSessionPage.jsx`
-- [ ] `features/practice/screens/PracticeSetupScreen.jsx` → `features/practice/pages/PracticeSetupPage.jsx`
+- [x] `features/practice/components/ReportQuestionButton.jsx`
+- [x] `features/practice/screens/PracticeResultScreen.jsx` → `pages/PracticeResultPage.jsx`
+- [x] `features/practice/screens/PracticeSessionScreen.jsx` → `pages/PracticeSessionPage.jsx`
+- [x] `features/practice/screens/PracticeSetupScreen.jsx` → `pages/PracticeSetupPage.jsx`
 
+**New on the web:** `features/practice/components/QuestionPalette.jsx` (also reusable for W8), `hooks/useGoBack.js`.
+**Pulled forward from W7:** `features/aiTutor/components/AskAiQuestionButton.jsx` (the result page needs it; it opens `/ask` with the question in router state).
 
-**Done when:** a student can run a practice test and a timed test, see explanations and results, reload mid-test and resume, and hit the daily limit.
+**Done when:** a student can run a practice test and a timed test, see explanations and results, reload mid-test and resume, and hit the daily limit. (Met. Checked in a real browser at 393 px and 1280 px, on the dev server and the production bundle: a keyboard answer shows its explanation, leaving asks first, a reload mid-test resumes it, finishing shows the result, a timed test shows its countdown. 401 automated tests pass.)
+
+**W5 notes and deliberate differences**
+
+- **Bug found in the browser and fixed, affecting every page:** "can I go back?" was decided with `location.key === 'default'`, which is only true for the first page of the document. After the setup page was replaced by the session page the key was no longer `default`, so on a directly opened session the back arrow called `navigate(-1)` into nothing and **no leave prompt appeared**. All pages now use one hook, `hooks/useGoBack.js`, which reads React Router's own history index (and falls back to the key rule only under the in-memory test router). Applied to `ScreenHeader`, the auth pages, the exam picker, the material viewer and the practice pages; it has its own tests, including the exact "first page was replaced" case.
+- **Palette accessibility:** the current question keeps `aria-current` even after it is answered (a test caught that it was lost).
+- **Accuracy** on the result page is correct answers over **answered** questions (so 1 right out of 1 answered is 100%, with 4 skipped), the same as mobile.
+- **Enter is not a shortcut.** The plan listed "Enter next", but Enter already activates whichever button has focus, so using it for Next would fight the browser. `→` / `N` move forward instead.
+- **Tab-close warning only for timed tests.** An untimed session is saved and resumes after a reload, so a warning would only be friction. A timed test's clock keeps running, so it gets one.
+- **Practice timing is the browser's clock**, as on mobile (`Date.now()`). Mock tests (W8) use the server clock.
+- **Sticky action bars** on the setup and result pages sit above the phone tab bar (they used to slide under it).
+- **Ask epadh.ai prompts travel in router state**, not the URL (they are long). After a reload the state is gone and the chat opens empty; W7 reads `location.state.initialPrompt`.
+- **Test notes:** the daily-limit test is last in its file because it uses up the day's allowance for the shared store. Option buttons are found by their text (`option()` helper) because their accessible name also starts with the letter A–E.
 
 ---
 
@@ -518,7 +524,7 @@ Mobile files for this phase:
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (13)
 
-- [ ] `features/aiTutor/components/AskAiQuestionButton.jsx`
+- [x] `features/aiTutor/components/AskAiQuestionButton.jsx` (done in W5)
 - [ ] `features/aiTutor/components/ChatBubble.jsx`
 - [ ] `features/aiTutor/components/ChatComposer.jsx`
 - [ ] `features/aiTutor/components/ConversationHistorySheet.jsx`

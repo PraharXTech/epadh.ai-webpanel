@@ -1,13 +1,17 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { PATHS } from '@/routes/routePaths';
 import { selectContinueItem } from '@/store/selectors/activitySelectors';
 import { selectPracticeSession } from '@/store/selectors/practiceSelectors';
 
 // The last thing the student did and a `resume()` that opens that exact place:
 // the practice test in progress (or its setup), the material they were on, or the topic.
-export default function useContinueLearning(navigation) {
+// Web port: `navigation.navigate(...)` became router links (no `navigation` argument).
+export default function useContinueLearning() {
   const item = useSelector(selectContinueItem);
   const session = useSelector(selectPracticeSession);
+  const navigate = useNavigate();
 
   const resume = useCallback(
     target => {
@@ -16,18 +20,18 @@ export default function useContinueLearning(navigation) {
         return;
       }
       if (current.mode === 'practice') {
-        if (session?.topicId === current.topicId) {
-          navigation.navigate('PracticeSession');
-        } else {
-          navigation.navigate('PracticeSetup', { topicId: current.topicId });
-        }
+        navigate(
+          session?.topicId === current.topicId
+            ? PATHS.practiceSession
+            : PATHS.practiceSetup(current.topicId),
+        );
       } else if (current.mode === 'material') {
-        navigation.navigate('MaterialViewer', { itemId: current.itemId });
+        navigate(PATHS.material(current.itemId));
       } else {
-        navigation.navigate('TopicDetail', { topicId: current.topicId });
+        navigate(PATHS.topic(current.topicId));
       }
     },
-    [item, session, navigation],
+    [item, session, navigate],
   );
 
   return { item, resume };

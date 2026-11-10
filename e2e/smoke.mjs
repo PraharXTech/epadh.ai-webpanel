@@ -210,7 +210,10 @@ const journey = async (label, width, height) => {
     timerText,
   );
   await page.getByRole('button', { name: 'Leave test' }).click();
-  await page.getByRole('button', { name: 'Leave' }).click();
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: 'Leave', exact: true })
+    .click();
 
   // no sideways scrolling
   const overflow = await page.evaluate(
