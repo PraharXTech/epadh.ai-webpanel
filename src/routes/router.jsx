@@ -13,6 +13,9 @@ import ChapterListPage from '@/features/syllabus/pages/ChapterListPage';
 import SubjectListPage from '@/features/syllabus/pages/SubjectListPage';
 import TopicDetailPage from '@/features/syllabus/pages/TopicDetailPage';
 import TopicListPage from '@/features/syllabus/pages/TopicListPage';
+import PracticeResultPage from '@/features/practice/pages/PracticeResultPage';
+import PracticeSessionPage from '@/features/practice/pages/PracticeSessionPage';
+import PracticeSetupPage from '@/features/practice/pages/PracticeSetupPage';
 import NotFoundPage from '@/pages/public/NotFoundPage';
 import PlaceholderPage from '@/pages/PlaceholderPage';
 import { OnboardingOnly, PublicOnly, RequireAuth, RequireExam } from './guards';
@@ -99,14 +102,8 @@ export const router = createBrowserRouter([
               { path: PATTERNS.topic, element: <TopicDetailPage /> },
               { path: PATHS.studyMaterial, element: <MaterialPage /> },
               { path: PATHS.tests, element: ph('Tests', 'TestsScreen', 'W8') },
-              {
-                path: PATTERNS.practiceSetup,
-                element: ph('Practice setup', 'PracticeSetupScreen', 'W5'),
-              },
-              {
-                path: PATHS.practiceResult,
-                element: ph('Practice result', 'PracticeResultScreen', 'W5'),
-              },
+              { path: PATTERNS.practiceSetup, element: <PracticeSetupPage /> },
+              { path: PATHS.practiceResult, element: <PracticeResultPage /> },
               {
                 path: PATHS.mocks,
                 element: ph('Mock tests', 'MockTestsScreen', 'W8'),
@@ -223,10 +220,7 @@ export const router = createBrowserRouter([
                 element: <ExamSelectionPage changing />,
               },
               { path: PATTERNS.material, element: <MaterialViewerPage /> },
-              {
-                path: PATHS.practiceSession,
-                element: ph('Practice session', 'PracticeSessionScreen', 'W5'),
-              },
+              { path: PATHS.practiceSession, element: <PracticeSessionPage /> },
               {
                 path: PATHS.mockSession,
                 element: ph('Mock test', 'MockSessionScreen', 'W8'),
