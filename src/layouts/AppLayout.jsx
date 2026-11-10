@@ -6,6 +6,7 @@ import BottomBar from '@/components/layout/BottomBar';
 import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
 import { fetchNotifications } from '@/features/notifications/store/notificationsSlice';
+import useEntitlementRefresh from '@/hooks/useEntitlementRefresh';
 import useReconnectSync from '@/hooks/useReconnectSync';
 
 // Logged-in shell. >= 1024 px: permanent sidebar. Below: hamburger drawer + bottom tabs.
@@ -16,6 +17,9 @@ export default function AppLayout() {
 
   // Send what was queued offline (study sessions, a mock's rank) when the connection returns.
   useReconnectSync();
+
+  // A plan bought elsewhere, or one that expired, is picked up when the student returns to the tab.
+  useEntitlementRefresh();
 
   // So the bell shows what is waiting without opening the list first.
   useEffect(() => {

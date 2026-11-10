@@ -73,11 +73,30 @@ export const createOrder = async ({ planId, idempotencyKey }) => {
 // Real flow: the Razorpay SDK hands back a paymentId + signature, which the server
 // verifies against its own secret; the app never decides success itself. Mocked here:
 // `outcome` stands in for what the checkout sheet would have produced.
-export const verifyPayment = async ({ orderId, planId, outcome }) => {
+export const verifyPayment = async ({
+  orderId,
+  planId,
+  outcome,
+  paymentId,
+  signature,
+}) => {
+  // Web change: a window closed without paying, or a payment the window reported as failed,
+  // never reaches the server (there is nothing to verify).
+  if (!USE_MOCK_API && (outcome === 'cancelled' || outcome === 'failed')) {
+    const error = new Error(
+      outcome === 'cancelled'
+        ? 'Payment was cancelled'
+        : 'The payment did not go through. Nothing was charged.',
+    );
+    error.code = outcome;
+    throw error;
+  }
   if (!USE_MOCK_API) {
     const { data } = await apiClient.post('/payments/verify', {
       orderId,
       planId,
+      paymentId,
+      signature,
     });
     return data; // { entitlements, receipt }
   }

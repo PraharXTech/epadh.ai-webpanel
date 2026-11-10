@@ -18,6 +18,11 @@ import TopicListPage from '@/features/syllabus/pages/TopicListPage';
 import PracticeResultPage from '@/features/practice/pages/PracticeResultPage';
 import PracticeSessionPage from '@/features/practice/pages/PracticeSessionPage';
 import PracticeSetupPage from '@/features/practice/pages/PracticeSetupPage';
+import CheckoutPage from '@/features/membership/pages/CheckoutPage';
+import MembershipPage from '@/features/membership/pages/MembershipPage';
+import PaymentHistoryPage from '@/features/membership/pages/PaymentHistoryPage';
+import PaymentProcessingPage from '@/features/membership/pages/PaymentProcessingPage';
+import PaymentSuccessPage from '@/features/membership/pages/PaymentSuccessPage';
 import MockInstructionsPage from '@/features/mock/pages/MockInstructionsPage';
 import MockResultPage from '@/features/mock/pages/MockResultPage';
 import MockSessionPage from '@/features/mock/pages/MockSessionPage';
@@ -173,30 +178,14 @@ export const router = createBrowserRouter([
                 path: PATHS.notifications,
                 element: ph('Notifications', 'NotificationsScreen', 'W12'),
               },
-              {
-                path: PATHS.membership,
-                element: ph('Membership', 'MembershipScreen', 'W9'),
-              },
-              {
-                path: PATTERNS.checkout,
-                element: ph('Checkout', 'CheckoutScreen', 'W9'),
-              },
+              { path: PATHS.membership, element: <MembershipPage /> },
+              { path: PATTERNS.checkout, element: <CheckoutPage /> },
               {
                 path: PATHS.paymentProcessing,
-                element: ph(
-                  'Processing payment',
-                  'PaymentProcessingScreen',
-                  'W9',
-                ),
+                element: <PaymentProcessingPage />,
               },
-              {
-                path: PATHS.paymentSuccess,
-                element: ph('Payment successful', 'PaymentSuccessScreen', 'W9'),
-              },
-              {
-                path: PATHS.paymentHistory,
-                element: ph('Payment history', 'PaymentHistoryScreen', 'W9'),
-              },
+              { path: PATHS.paymentSuccess, element: <PaymentSuccessPage /> },
+              { path: PATHS.paymentHistory, element: <PaymentHistoryPage /> },
             ],
           },
 

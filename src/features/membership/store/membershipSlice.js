@@ -58,21 +58,36 @@ export const startCheckout = createAsyncThunk(
     }
   },
   {
+    // Web change: only a checkout that is actually in flight blocks a new one. A finished,
+    // failed or abandoned one (a tab left on the payment page) must not make the next visit
+    // wait for ever.
     condition: (planId, { getState }) =>
-      getState().membership.checkout.status === 'idle',
+      !['creating', 'verifying', 'polling'].includes(
+        getState().membership.checkout.status,
+      ),
   },
 );
 
 // `outcome` is what the (mocked) checkout sheet produced: 'success' | 'failed' |
-// 'cancelled' | 'pending'. A pending outcome is handed off to pollPayment instead of
+// 'cancelled' | 'pending'. (Web: with the real Razorpay window, `paymentId` and `signature` are
+// what it returned; the server verifies them.) A pending outcome is handed off to pollPayment instead of
 // verified directly, matching how a real UPI/bank-redirect payment resolves.
 export const verifyCheckout = createAsyncThunk(
   'membership/verifyCheckout',
-  async ({ orderId, planId, outcome }, { dispatch, rejectWithValue }) => {
+  async (
+    { orderId, planId, outcome, paymentId, signature },
+    { dispatch, rejectWithValue },
+  ) => {
     try {
       return outcome === 'pending'
         ? await dispatch(pollPayment({ orderId, planId })).unwrap()
-        : await verifyPayment({ orderId, planId, outcome });
+        : await verifyPayment({
+            orderId,
+            planId,
+            outcome,
+            paymentId,
+            signature,
+          });
     } catch (e) {
       // pollPayment's own rejectWithValue payload (a plain {message, code} object)
       // comes through unwrap() as-is; verifyPayment throws a real Error instead,
@@ -217,6 +232,11 @@ const membershipSlice = createSlice({
         state.history = [action.payload.receipt, ...state.history];
       })
       .addCase(resumePendingOrder.rejected, (state, action) => {
+        // Web change: leave the checkout in a settled state. A still-pending payment used to
+        // stay 'polling', which would block starting the next checkout.
+        state.checkout.status = 'failed';
+        state.checkout.error = action.payload?.message ?? action.error.message;
+        state.checkout.errorCode = action.payload?.code ?? 'failed';
         if (action.payload?.code && action.payload.code !== 'pending') {
           state.pendingOrder = null;
         }

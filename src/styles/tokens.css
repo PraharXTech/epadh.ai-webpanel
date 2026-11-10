@@ -146,3 +146,24 @@
   border: 1px solid #cbd5e1;
   padding: 0.3em 0.6em;
 }
+
+/* Payment success: the confetti pieces pop in once. */
+@keyframes confetti-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.2) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(var(--rotate, 0deg));
+  }
+}
+.confetti-piece {
+  transform: rotate(var(--rotate, 0deg));
+  animation: confetti-pop 0.6s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece {
+    animation: none;
+  }
+}
