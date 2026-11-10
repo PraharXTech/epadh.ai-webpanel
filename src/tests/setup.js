@@ -6,6 +6,18 @@ import { cleanup } from '@testing-library/react';
 // they use (fn, spyOn, useFakeTimers), so old tests keep working while they are ported.
 globalThis.jest = globalThis.vi;
 
+// jsdom has no matchMedia; react-hot-toast reads `prefers-reduced-motion` through it.
+window.matchMedia ??= query => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addEventListener: () => {},
+  removeEventListener: () => {},
+  addListener: () => {},
+  removeListener: () => {},
+  dispatchEvent: () => false,
+});
+
 afterEach(() => {
   cleanup();
   window.localStorage.clear();

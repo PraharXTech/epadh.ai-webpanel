@@ -11,8 +11,7 @@ export default function ScreenHeader({ title, subtitle, onBack, right }) {
 
   const goBack =
     onBack ??
-    (() =>
-      location.key === 'default' ? navigate(PATHS.home) : navigate(-1));
+    (() => (location.key === 'default' ? navigate(PATHS.home) : navigate(-1)));
 
   return (
     <div className="flex items-center px-4 pt-2 pb-3">

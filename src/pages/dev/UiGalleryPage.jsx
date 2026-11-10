@@ -68,10 +68,7 @@ export default function UiGalleryPage() {
       <Block title="Chips, badges, avatars">
         <div className="mb-4 flex flex-wrap gap-2">
           {['all', 'ssc', 'upsssc', 'police'].map(id => (
-            <Chip
-              key={id}
-              selected={chip === id}
-              onClick={() => setChip(id)}>
+            <Chip key={id} selected={chip === id} onClick={() => setChip(id)}>
               {id.toUpperCase()}
             </Chip>
           ))}
