@@ -176,9 +176,9 @@ const appReducer = combineReducers({
   ),
 });
 
-// Web only: tell the other open tabs when this one logs out (the  event fires in
-// every tab EXCEPT the one that wrote the key).  stops two tabs
-// from bouncing the same logout back and forth.
+// Web only: tell the other open tabs when this one logs out (the `storage` event fires
+// in every tab EXCEPT the one that wrote the key). `applyingRemoteLogout` stops two
+// tabs from bouncing the same logout back and forth.
 const LOGOUT_SIGNAL_KEY = 'epadhai.logoutAt';
 let applyingRemoteLogout = false;
 
