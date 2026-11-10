@@ -296,78 +296,64 @@ Mobile files for this phase:
 
 ---
 
-## W4 — Syllabus and study material (4–5 days)
+## W4 — Syllabus and study material (4–5 days) — **done**, see notes at the end of this section
 
-Ports mobile Phase 2. Same mock syllabus tree, progress computed in the app.
+Ports mobile Phase 2. Same mock syllabus tree and material, progress computed in the app.
 
-- [ ] Routes `/syllabus`, `/syllabus/:examId/:subjectId`, `…/:chapterId`, `/topics/:topicId`, `/material/:itemId`, `/study-material`
-- [ ] Desktop split view: syllabus tree on the left, topic detail on the right; mobile web stays one column
-- [ ] Topic detail tabs (Study Material, Practice Test, Ask) mirrored in `?tab=`; Mark complete
-- [ ] Material viewer: **PDF** (`react-pdf`, lazy-loaded), **HTML** (DOMPurify + typographic styles, text-size control), **video** (`<video controls>`), bookmark, resume position, `useTimeOnScreen`
-- [ ] Locked chapters/topics → `/membership?feature=fullSyllabus`
-- [ ] Syllabus progress tracker and Home ring/subject-count wiring
-- [ ] Not done on mobile either: auto-complete on finish, real offline download
-- [ ] Port: `syllabus.test.js`, `material.test.js`, `syllabusFlow`, `materialScreen`, `materialViewer` integration tests
+- [x] Routes `/syllabus`, `/syllabus/:examId/:subjectId`, `…/:chapterId`, `/topics/:topicId`, `/material/:itemId`, `/study-material`. When no single exam is selected the URL says `all` where mobile passed `undefined`
+- [x] Desktop: a **chapter outline rail** on the topic page (the other topics of the chapter, this one highlighted). The full "syllabus tree on the left" split view from the plan was **not** built: the pages are separate drill-down pages with two-column lists on tablet and desktop
+- [x] Topic detail tabs (Study Material, Practice Test, Ask) with the tab kept in `?tab=`; Mark complete
+- [x] Material viewer: **PDF** (pdf.js through `react-pdf`, lazy-loaded, pages drawn on demand, zoom, page counter, resume), **HTML** (DOMPurify, text-size control, scroll progress, resume), **video** (native `<video>`, resume, progress)
+- [x] Locked chapters / topics → `/membership?feature=fullSyllabus`
+- [x] Syllabus progress numbers (completed, pending, per subject, overall): the copied selectors, shown on the Syllabus page
+- [ ] Home progress ring and subject count wiring (the Home page is W6)
+- [ ] Not done on mobile either: auto-complete a topic when its material is finished, real offline download (the Download button only marks it saved)
+- [x] Port: `syllabus.test.js`, `material.test.js` (W1), `syllabusFlow`, `materialScreen` → `materialPage`, `materialViewer`, and the mobile `studySessionHook` test
 
 Mobile files for this phase:
 
-**Copy as is (pure JS)** (9)
+**Copy as is (pure JS)** (9) — all done in W1
 
-*material*
-
-- [x] `features/material/hooks/useMaterial.js`
-- [x] `features/material/services/materialService.js`
-- [x] `features/material/store/materialSlice.js`
-- [x] `features/material/utils/format.js`
-
-*store*
-
-- [x] `store/selectors/materialSelectors.js`
-- [x] `store/selectors/syllabusSelectors.js`
-
-*syllabus*
-
-- [x] `features/syllabus/hooks/useSyllabus.js`
-- [x] `features/syllabus/services/syllabusService.js`
-- [x] `features/syllabus/store/syllabusSlice.js`
+- [x] `features/material/hooks/useMaterial.js`, `services/materialService.js`, `store/materialSlice.js`, `utils/format.js`
+- [x] `store/selectors/materialSelectors.js`, `store/selectors/syllabusSelectors.js`
+- [x] `features/syllabus/hooks/useSyllabus.js`, `services/syllabusService.js`, `store/syllabusSlice.js`
 
 **Adapt (native module → web API, same exports)** (1)
 
-- [ ] `hooks/useTimeOnScreen.js` — replace `react-native`
+- [x] `hooks/useTimeOnScreen.js` — `AppState` → Page Visibility (`services/page/visibility.js`)
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (23)
 
 *material*
 
-- [ ] `features/material/components/BottomSheet.jsx`
-- [ ] `features/material/components/HtmlViewer.jsx`
-- [ ] `features/material/components/ItemActionSheet.jsx`
-- [ ] `features/material/components/MaterialBanner.jsx`
-- [ ] `features/material/components/MaterialRow.jsx`
-- [ ] `features/material/components/MaterialTypeIcon.jsx`
-- [ ] `features/material/components/PdfViewer.jsx`
-- [ ] `features/material/components/SelectorPill.jsx`
-- [ ] `features/material/components/SmallProgressRing.jsx`
-- [ ] `features/material/components/SubjectPickerSheet.jsx`
-- [ ] `features/material/components/SubjectSection.jsx`
-- [ ] `features/material/components/TypeFilterBar.jsx`
-- [ ] `features/material/components/VideoPlayer.jsx`
-- [ ] `features/material/components/ViewerMessage.jsx`
-- [ ] `features/material/screens/MaterialScreen.jsx` → `features/material/pages/MaterialPage.jsx`
-- [ ] `features/material/screens/MaterialViewerScreen.jsx` → `features/material/pages/MaterialViewerPage.jsx`
+- [x] `components/BottomSheet.jsx` (on `ui/Modal` placement `bottom`), `HtmlViewer.jsx`, `ItemActionSheet.jsx`, `MaterialBanner.jsx`, `MaterialRow.jsx`, `MaterialTypeIcon.jsx`, `PdfViewer.jsx`, `SelectorPill.jsx`, `SmallProgressRing.jsx`, `SubjectPickerSheet.jsx`, `SubjectSection.jsx`, `TypeFilterBar.jsx`, `VideoPlayer.jsx`, `ViewerMessage.jsx`
+- [x] `screens/MaterialScreen.jsx` → `pages/MaterialPage.jsx`
+- [x] `screens/MaterialViewerScreen.jsx` → `pages/MaterialViewerPage.jsx`
 
 *syllabus*
 
-- [ ] `features/syllabus/components/Badges.jsx`
-- [ ] `features/syllabus/components/SubjectBadge.jsx`
-- [ ] `features/syllabus/components/SyllabusRow.jsx`
-- [ ] `features/syllabus/screens/ChapterListScreen.jsx` → `features/syllabus/pages/ChapterListPage.jsx`
-- [ ] `features/syllabus/screens/SubjectListScreen.jsx` → `features/syllabus/pages/SubjectListPage.jsx`
-- [ ] `features/syllabus/screens/TopicDetailScreen.jsx` → `features/syllabus/pages/TopicDetailPage.jsx`
-- [ ] `features/syllabus/screens/TopicListScreen.jsx` → `features/syllabus/pages/TopicListPage.jsx`
+- [x] `components/Badges.jsx`, `SubjectBadge.jsx`, `SyllabusRow.jsx`
+- [x] `screens/ChapterListScreen.jsx` → `pages/ChapterListPage.jsx`
+- [x] `screens/SubjectListScreen.jsx` → `pages/SubjectListPage.jsx`
+- [x] `screens/TopicDetailScreen.jsx` → `pages/TopicDetailPage.jsx`
+- [x] `screens/TopicListScreen.jsx` → `pages/TopicListPage.jsx`
 
+**Pulled forward from later phases (needed by these pages):** `features/study/hooks/useStudySession.js` (W6, adapted: `AppState` → Page Visibility, touch → pointer / key / wheel / scroll handlers, no `navigation` argument) and `features/practice/components/PracticeCard.jsx` (W5). Their W5 / W6 checklists are ticked accordingly.
 
-**Done when:** a student can drill Exam → Subject → Chapter → Topic, read PDF/HTML/video, mark complete and see overall and subject progress change; refresh keeps the place.
+**Done when:** a student can drill Exam → Subject → Chapter → Topic, read PDF/HTML/video, mark complete and see overall and subject progress update; refresh keeps the place. (Met. Checked in a real browser at 393 px and 1280 px, on the dev server and on the production bundle: syllabus → topic → article (text size changes) → PDF (a page is painted) → video loads → a topic link opened cold after a reload. 363 automated tests pass. Progress shown on **Home** waits for W6.)
+
+**W4 notes and deliberate differences**
+
+- **Deep links work.** Mobile pages assume the syllabus and material are already loaded (the student got there from a tab). On the web anyone can open `/topics/t-number-types` or `/material/m1` cold, so every page loads the data it needs and shows a spinner meanwhile (a test covers it, and so does the browser smoke test).
+- **PDF host needs CORS.** pdf.js fetches the file itself, so the server (S3 / CDN) that hosts study PDFs must send `Access-Control-Allow-Origin` for the web app's origin. Without it the viewer shows "Couldn't open this PDF". **Add this to the list for PraharX.** The sample PDF used by the mock (Mozilla's, 14 pages) allows it; the mock says "45 pages", which is just mock text.
+- **pdf.js is loaded only when a PDF is opened** (a separate chunk plus a 1.27 MB worker file). Pages are drawn when they come near the screen, so a 200-page paper does not paint 200 canvases. Reading progress is "the page in the middle of the view / page count", as on mobile.
+- **Article HTML goes through DOMPurify** before it is shown (scripts, `onerror=`, `javascript:` links are removed, links open in a new tab with `noopener`). The mobile renderer had no scripting engine; a browser does. A test attacks it.
+- **Video** uses the browser's own controls (speed, fullscreen, picture-in-picture). HLS streams (`.m3u8`) are **not** supported by Chrome / Edge / Firefox without `hls.js`; add it if the backend serves HLS. The mock videos are public MP4 files.
+- **`FocusLayout` is now a fixed-height shell** (`h-dvh`, the page scrolls inside `<main>`), which is what lets the viewers keep their own scroll area for progress and resume.
+- **Main bundle** grew to about 607 kB (200 kB gzip) with DOMPurify and the new pages. Code splitting of the pages is W13.
+- **Inherited quirk (not fixed):** a load that is still running when the student logs out (the mock takes 500 ms) fills the store again just after the reset. Mobile has the same logic. It only repopulates public exam content, not personal data, but it is worth fixing in the slices when the real API lands (ignore a result whose request started before the logout).
+- **Test helpers added:** `renderWithRealStore({ routes })` for multi-page flows, `tests/utils/examData.js`, and `ResizeObserver` / `IntersectionObserver` stand-ins in the test setup. `react-pdf` is replaced by a stand-in in tests because jsdom cannot draw canvases; the real pdf.js is exercised by `npm run e2e`.
+- **Ids are not guessable in tests:** the PDF / row buttons are named by prefix (`/^Number System – Complete Notes/`) because the download and "more options" buttons contain the same title.
 
 ---
 
@@ -402,7 +388,7 @@ Mobile files for this phase:
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (6)
 
 - [ ] `features/practice/components/AiBadge.jsx`
-- [ ] `features/practice/components/PracticeCard.jsx`
+- [x] `features/practice/components/PracticeCard.jsx` (done in W4)
 - [ ] `features/practice/components/ReportQuestionButton.jsx`
 - [ ] `features/practice/screens/PracticeResultScreen.jsx` → `features/practice/pages/PracticeResultPage.jsx`
 - [ ] `features/practice/screens/PracticeSessionScreen.jsx` → `features/practice/pages/PracticeSessionPage.jsx`
@@ -464,7 +450,7 @@ Mobile files for this phase:
 
 **Adapt (native module → web API, same exports)** (1)
 
-- [ ] `features/study/hooks/useStudySession.js` — replace `react-native`
+- [x] `features/study/hooks/useStudySession.js` — replace `react-native` (done in W4)
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (14)
 

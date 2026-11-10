@@ -22,3 +22,23 @@ afterEach(() => {
   cleanup();
   window.localStorage.clear();
 });
+
+// jsdom has no layout engine and no observers. The components that measure things (PDF
+// pages, the article reader) only need these to exist; tests that care about sizes mock the
+// element properties themselves.
+globalThis.ResizeObserver ??= class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+// A page "scrolls into view" immediately, so lazy PDF pages render in tests.
+globalThis.IntersectionObserver ??= class {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe(element) {
+    this.callback([{ isIntersecting: true, target: element }]);
+  }
+  unobserve() {}
+  disconnect() {}
+};

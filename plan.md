@@ -281,5 +281,6 @@ Also not on mobile either (carried over as the same TODOs): real Razorpay, FCM, 
 6. Hosting target (Vercel / Netlify / S3+CloudFront) and the environments needed.
 7. Razorpay: a separate web key from the mobile one?
 8. PWA / installable app in scope, or plain website?
-9. Brand name is still epadh.ai vs Aadi.ai: keep it in `config/brand.js` (same as mobile).
-10. All open questions in mobile `plan.md` §11 still apply (study material format, OMR layout, free limits, streak rule, rank empty state, UI language).
+9. **PDF CORS:** the storage that serves study PDFs must send `Access-Control-Allow-Origin` for the web origin, because pdf.js fetches the file itself. Also HLS video would need `hls.js`.
+10. Brand name is still epadh.ai vs Aadi.ai: keep it in `config/brand.js` (same as mobile).
+11. All open questions in mobile `plan.md` §11 still apply (study material format, OMR layout, free limits, streak rule, rank empty state, UI language).

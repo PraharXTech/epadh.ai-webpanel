@@ -53,6 +53,96 @@ const journey = async (label, width, height) => {
     new URL(page.url()).pathname === '/',
   );
 
+  // ---- W4: syllabus drill-down, article, PDF, video, deep link
+  // (the PDF and the video are public sample files, so these checks need internet access)
+  await page.goto(BASE + '/syllabus', { waitUntil: 'networkidle' });
+  await page.getByRole('link', { name: /Quantitative Aptitude/ }).click();
+  await page.getByRole('link', { name: /Number System/ }).click();
+  await page
+    .getByRole('link', { name: /Types of Numbers/ })
+    .first()
+    .click();
+  await page
+    .getByRole('button', { name: /Mark as complete/ })
+    .waitFor({ timeout: 8000 });
+  check(
+    `${label}: syllabus drills down to a topic`,
+    page.url().endsWith('/topics/t-number-types'),
+  );
+
+  await page
+    .getByRole('button', { name: /^Types of Numbers – Quick Revision/ })
+    .click();
+  await page
+    .getByRole('heading', { name: 'Types of Numbers', level: 2 })
+    .waitFor({ timeout: 8000 });
+  const fontSize = () =>
+    page
+      .locator('.material-html')
+      .evaluate(el => parseFloat(getComputedStyle(el).fontSize));
+  const before = await fontSize();
+  await page.getByRole('button', { name: 'Larger text' }).click();
+  const after = await fontSize();
+  check(
+    `${label}: article opens and the text size changes`,
+    after > before,
+    `${before} -> ${after}`,
+  );
+  await page.goBack();
+
+  await page
+    .getByRole('button', { name: /^Number System – Complete Notes/ })
+    .click();
+  let pdfOk = true;
+  try {
+    await page.getByLabel(/Page 1 of \d+/).waitFor({ timeout: 25000 });
+    await page.waitForFunction(
+      () =>
+        [...document.querySelectorAll('canvas')].some(canvas => {
+          const data = canvas
+            .getContext('2d')
+            .getImageData(0, 0, canvas.width, canvas.height).data;
+          for (let i = 0; i < data.length; i += 4)
+            if (data[i] < 200) return true;
+          return false;
+        }),
+      null,
+      { timeout: 25000 },
+    );
+  } catch {
+    pdfOk = false;
+  }
+  check(`${label}: PDF opens and a page is painted`, pdfOk);
+
+  await page.goto(BASE + '/study-material', { waitUntil: 'networkidle' });
+  await page
+    .getByRole('button', { name: /^Percentage – Concept & Questions/ })
+    .click();
+  await page.locator('video').waitFor({ timeout: 8000 });
+  const videoReady = await page
+    .waitForFunction(
+      () => document.querySelector('video')?.readyState >= 1,
+      null,
+      {
+        timeout: 25000,
+      },
+    )
+    .then(
+      () => true,
+      () => false,
+    );
+  check(`${label}: video loads`, videoReady);
+
+  // a deep link opened cold (nothing cached) loads its own data
+  await page.evaluate(() => window.localStorage.removeItem('persist:syllabus'));
+  await page.goto(BASE + '/topics/t-number-types', {
+    waitUntil: 'networkidle',
+  });
+  await page
+    .getByRole('heading', { name: 'Types of Numbers' })
+    .waitFor({ timeout: 8000 });
+  check(`${label}: deep link to a topic works after a reload`, true);
+
   // no sideways scrolling
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth,
