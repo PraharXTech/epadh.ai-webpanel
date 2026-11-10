@@ -11,7 +11,10 @@ import useGoBack from '@/hooks/useGoBack';
 import { PATHS } from '@/routes/routePaths';
 import { showAlert } from '@/services/alerts/alertStore';
 import { subscribePageVisibility } from '@/services/page/visibility';
-import { selectMockSession, selectMockSync } from '@/store/selectors/mockSelectors';
+import {
+  selectMockSession,
+  selectMockSync,
+} from '@/store/selectors/mockSelectors';
 import {
   clearAnswer,
   goToQuestion,
@@ -453,8 +456,8 @@ export default function MockSessionPage() {
 
             <p className="mx-4 mt-3 hidden text-xs text-slate-400 lg:block">
               Keyboard: 1–{question.options.length} or A–
-              {LETTERS[question.options.length - 1]} to choose, ← → to move, M to
-              mark for review.
+              {LETTERS[question.options.length - 1]} to choose, ← → to move, M
+              to mark for review.
             </p>
           </div>
         </div>

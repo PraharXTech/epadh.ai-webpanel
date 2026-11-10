@@ -38,7 +38,7 @@ export default function QuestionPalette({
     <div className="flex min-h-0 flex-1 flex-col">
       {/* A full mock can have 100 questions: only the grid scrolls, so the legend and the
           submit button stay in view (in the side panel, and in the phone sheet). */}
-      <div className="min-h-0 flex-1 overflow-y-auto max-h-[45vh] lg:max-h-none">
+      <div className="max-h-[45vh] min-h-0 flex-1 overflow-y-auto lg:max-h-none">
         <ul className="grid grid-cols-5 gap-2">
           {session.questions.map((q, index) => {
             const state = questionState(session, q, index);

@@ -327,9 +327,7 @@ export default function TestsPage() {
                 className="flex w-full items-center justify-between rounded-lg px-1 py-3 hover:bg-slate-50">
                 <span
                   className={`text-sm ${
-                    s.id === sort
-                      ? 'font-bold text-blue-600'
-                      : 'text-slate-700'
+                    s.id === sort ? 'font-bold text-blue-600' : 'text-slate-700'
                   }`}>
                   {s.label}
                 </span>

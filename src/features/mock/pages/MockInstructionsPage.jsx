@@ -206,7 +206,11 @@ export default function MockInstructionsPage() {
             fullWidth
             size="lg"
             loading={starting}
-            onClick={inProgress ? () => navigate(PATHS.mockSession, { replace: true }) : start}>
+            onClick={
+              inProgress
+                ? () => navigate(PATHS.mockSession, { replace: true })
+                : start
+            }>
             {inProgress ? 'Resume test' : 'Start test'}
           </Button>
         )}

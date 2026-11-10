@@ -16,7 +16,9 @@ import { markPaperViewed, toggleSavedPaper } from '../store/pyqSlice';
 import { PYQ_FEATURE, paperLabel } from '../utils/pyq';
 
 // The PDF viewer pulls in pdf.js: load it only when a paper is opened.
-const PdfViewer = lazy(() => import('@/features/material/components/PdfViewer'));
+const PdfViewer = lazy(
+  () => import('@/features/material/components/PdfViewer'),
+);
 
 const DOCS = [
   { id: 'paper', label: 'Question paper', urlOf: p => p.url },

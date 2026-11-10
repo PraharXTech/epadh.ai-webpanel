@@ -18,6 +18,13 @@ import TopicListPage from '@/features/syllabus/pages/TopicListPage';
 import PracticeResultPage from '@/features/practice/pages/PracticeResultPage';
 import PracticeSessionPage from '@/features/practice/pages/PracticeSessionPage';
 import PracticeSetupPage from '@/features/practice/pages/PracticeSetupPage';
+import MockInstructionsPage from '@/features/mock/pages/MockInstructionsPage';
+import MockResultPage from '@/features/mock/pages/MockResultPage';
+import MockSessionPage from '@/features/mock/pages/MockSessionPage';
+import MockTestsPage from '@/features/mock/pages/MockTestsPage';
+import PyqPapersPage from '@/features/pyq/pages/PyqPapersPage';
+import PyqViewerPage from '@/features/pyq/pages/PyqViewerPage';
+import TestsPage from '@/features/tests/pages/TestsPage';
 import NotFoundPage from '@/pages/public/NotFoundPage';
 import PlaceholderPage from '@/pages/PlaceholderPage';
 import { OnboardingOnly, PublicOnly, RequireAuth, RequireExam } from './guards';
@@ -103,29 +110,16 @@ export const router = createBrowserRouter([
               { path: PATTERNS.chapter, element: <TopicListPage /> },
               { path: PATTERNS.topic, element: <TopicDetailPage /> },
               { path: PATHS.studyMaterial, element: <MaterialPage /> },
-              { path: PATHS.tests, element: ph('Tests', 'TestsScreen', 'W8') },
+              { path: PATHS.tests, element: <TestsPage /> },
               { path: PATTERNS.practiceSetup, element: <PracticeSetupPage /> },
               { path: PATHS.practiceResult, element: <PracticeResultPage /> },
-              {
-                path: PATHS.mocks,
-                element: ph('Mock tests', 'MockTestsScreen', 'W8'),
-              },
+              { path: PATHS.mocks, element: <MockTestsPage /> },
               {
                 path: PATTERNS.mockInstructions,
-                element: ph(
-                  'Mock instructions',
-                  'MockInstructionsScreen',
-                  'W8',
-                ),
+                element: <MockInstructionsPage />,
               },
-              {
-                path: PATHS.mockResult,
-                element: ph('Mock result', 'MockResultScreen', 'W8'),
-              },
-              {
-                path: PATHS.pyq,
-                element: ph('Previous year papers', 'PyqPapersScreen', 'W8'),
-              },
+              { path: PATHS.mockResult, element: <MockResultPage /> },
+              { path: PATHS.pyq, element: <PyqPapersPage /> },
               {
                 path: PATHS.omr,
                 element: ph('OMR scanner', 'OmrScanScreen', 'W11'),
@@ -225,14 +219,8 @@ export const router = createBrowserRouter([
               },
               { path: PATTERNS.material, element: <MaterialViewerPage /> },
               { path: PATHS.practiceSession, element: <PracticeSessionPage /> },
-              {
-                path: PATHS.mockSession,
-                element: ph('Mock test', 'MockSessionScreen', 'W8'),
-              },
-              {
-                path: PATTERNS.pyqViewer,
-                element: ph('Paper', 'PyqViewerScreen', 'W8'),
-              },
+              { path: PATHS.mockSession, element: <MockSessionPage /> },
+              { path: PATTERNS.pyqViewer, element: <PyqViewerPage /> },
             ],
           },
         ],
