@@ -101,9 +101,17 @@ export default function AskAiChatPage() {
 
   // Reuse the active conversation when it already matches this entry point (same topic, or the
   // general chat again); otherwise open or create the right one.
+  // Web addition: the saved chats survive a reload but "which one is open" does not (mobile
+  // behaves the same after a restart). On a cold load with no question to ask, reopen the most
+  // recent chat for this topic so a reload does not drop the student's place.
   useEffect(() => {
     if (initialPrompt || !conversation || conversation.topicId !== topicId) {
-      dispatch(startConversation({ examId, topicId, topicName }));
+      const lastForTopic = conversations.find(c => c.topicId === topicId);
+      if (!initialPrompt && !conversation && lastForTopic) {
+        dispatch(openConversation(lastForTopic.id));
+      } else {
+        dispatch(startConversation({ examId, topicId, topicName }));
+      }
     }
     // Only a different topic starts a different chat.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -335,11 +343,6 @@ export default function AskAiChatPage() {
                 />
               </button>
             ) : null}
-            <QuotaChip
-              limit={limit}
-              remaining={remaining}
-              onPress={askToUpgrade}
-            />
             {messages.length > 0 ? (
               <button
                 type="button"
@@ -359,6 +362,16 @@ export default function AskAiChatPage() {
           </div>
         }
       />
+
+      {limit != null ? (
+        <div className="flex justify-end px-4 pb-2">
+          <QuotaChip
+            limit={limit}
+            remaining={remaining}
+            onPress={askToUpgrade}
+          />
+        </div>
+      ) : null}
 
       <div className="flex min-h-0 flex-1 flex-col">
         {messages.length === 0 ? (

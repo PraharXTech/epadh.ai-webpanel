@@ -8,6 +8,10 @@ import { sendMessage } from '../services/aiTutorService';
 const MAX_CONVERSATIONS = 20;
 const MAX_MESSAGES = 200;
 
+// WEB CHANGE: a reply is written to the chat it was asked in (`action.meta.conversationId` on the
+// fulfilled action), not to whichever chat is open when it arrives. Switching chats while
+// waiting used to put the answer in the wrong chat, and a reply that landed after a logout
+// was counted against the next session's daily allowance.
 const newId = prefix =>
   `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -16,7 +20,10 @@ const newId = prefix =>
 // shows immediately; the AI reply lands on `fulfilled` and counts against today's quota.
 export const sendChatMessage = createAsyncThunk(
   'aiTutor/send',
-  async ({ text, promptId }, { getState, rejectWithValue }) => {
+  async (
+    { text, promptId },
+    { getState, rejectWithValue, fulfillWithValue },
+  ) => {
     // `retry: true` (see the pending case) re-asks the last message without a new bubble.
     try {
       const { aiTutor, user } = getState();
@@ -24,7 +31,7 @@ export const sendChatMessage = createAsyncThunk(
       const lastAi = [...conversation.messages]
         .reverse()
         .find(m => m.role === 'ai');
-      return await sendMessage({
+      const reply = await sendMessage({
         conversationId: conversation.id,
         examId: conversation.examId ?? user.selectedExamId,
         topicId: conversation.topicId,
@@ -33,6 +40,7 @@ export const sendChatMessage = createAsyncThunk(
         promptId,
         lastAiText: lastAi?.text,
       });
+      return fulfillWithValue(reply, { conversationId: conversation.id });
     } catch (e) {
       return rejectWithValue(getErrorMessage(e));
     }
@@ -44,17 +52,21 @@ export const sendChatMessage = createAsyncThunk(
 // the (mocked) vision analysis instead of the text chat service.
 export const sendPhotoMessage = createAsyncThunk(
   'aiTutor/sendPhoto',
-  async ({ imageUri, note }, { getState, rejectWithValue }) => {
+  async (
+    { imageUri, note },
+    { getState, rejectWithValue, fulfillWithValue },
+  ) => {
     try {
       const { aiTutor, user } = getState();
       const conversation = aiTutor.conversations[aiTutor.activeId];
-      return await analyzeDoubtPhoto({
+      const reply = await analyzeDoubtPhoto({
         imageUri,
         note,
         examId: conversation.examId ?? user.selectedExamId,
         topicId: conversation.topicId,
         topicName: conversation.topicName,
       });
+      return fulfillWithValue(reply, { conversationId: conversation.id });
     } catch (e) {
       return rejectWithValue(getErrorMessage(e));
     }
@@ -102,13 +114,17 @@ const pushUserMessage = (state, { text = '', imageUri } = {}) => {
 
 // Shared by both thunks' fulfilled case: appends the AI reply and counts it
 // against today's quota (a photo doubt counts the same as a text question).
-const pushAiReply = (state, reply) => {
-  const conversation = state.conversations[state.activeId];
-  if (conversation) {
-    conversation.messages.push(reply);
-    conversation.messages = conversation.messages.slice(-MAX_MESSAGES);
-    conversation.updatedAt = Date.now();
+const pushAiReply = (state, reply, conversationId) => {
+  const conversation = state.conversations[conversationId];
+  if (!conversation) {
+    // The chat is gone (a logout, or it was deleted): nothing to add the reply to, and it must
+    // not use up today's allowance of whoever is signed in now.
+    state.sendStatus = 'idle';
+    return;
   }
+  conversation.messages.push(reply);
+  conversation.messages = conversation.messages.slice(-MAX_MESSAGES);
+  conversation.updatedAt = Date.now();
   state.sendStatus = 'idle';
   const today = dayKey();
   state.daily =
@@ -201,7 +217,7 @@ const aiTutorSlice = createSlice({
           : pushUserMessage(state, { text: action.meta.arg.text }),
       )
       .addCase(sendChatMessage.fulfilled, (state, action) =>
-        pushAiReply(state, action.payload),
+        pushAiReply(state, action.payload, action.meta.conversationId),
       )
       .addCase(sendChatMessage.rejected, (state, action) => {
         state.sendStatus = 'failed';
@@ -216,7 +232,7 @@ const aiTutorSlice = createSlice({
             }),
       )
       .addCase(sendPhotoMessage.fulfilled, (state, action) =>
-        pushAiReply(state, action.payload),
+        pushAiReply(state, action.payload, action.meta.conversationId),
       )
       .addCase(sendPhotoMessage.rejected, (state, action) => {
         state.sendStatus = 'failed';

@@ -209,6 +209,34 @@ describe('practice test flow', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('offers "Ask epadh.ai" under the live explanation, with the question and the answer given', async () => {
+      await begin();
+      const { router } = at('/topics/t-hcf-lcm', '/practice/session');
+      const q = session().questions[0];
+      await screen.findByText('Question 1 of 5');
+      expect(
+        screen.queryByRole('button', { name: 'Ask epadh.ai' }),
+      ).not.toBeInTheDocument(); // not before answering
+
+      const wrong = q.options.findIndex((_, i) => i !== q.answer);
+      await userEvent.click(option(q.options[wrong]));
+      await userEvent.click(
+        await screen.findByRole('button', { name: 'Ask epadh.ai' }),
+      );
+      // leaving the test asks first; the answers are saved
+      await userEvent.click(
+        within(await screen.findByRole('dialog')).getByRole('button', {
+          name: 'Leave',
+        }),
+      );
+      await waitFor(() => expect(where(router)).toBe('/ask'));
+      const { initialPrompt, topicId } = router.state.location.state;
+      expect(topicId).toBe('t-hcf-lcm');
+      expect(initialPrompt).toContain(q.text);
+      expect(initialPrompt).toMatch(/I chose [A-E]\./);
+      expect(initialPrompt).toMatch(/Correct answer: [A-E]\./);
+    });
+
     it('with no session it sends the visitor to the Tests page', async () => {
       const { router } = at('/practice/session');
       await waitFor(() => expect(where(router)).toBe('/tests'));
