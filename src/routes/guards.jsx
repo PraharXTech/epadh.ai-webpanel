@@ -1,9 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-  selectBootstrapped,
-  selectIsAuthenticated,
-} from '@/store/selectors/authSelectors';
+import { selectIsAuthenticated } from '@/store/selectors/authSelectors';
 import { selectSelectedExamId } from '@/store/selectors/userSelectors';
 import { PATHS } from './routePaths';
 
@@ -62,11 +59,4 @@ export function RequireFlow({ selector, to }) {
     return <Navigate to={to} replace />;
   }
   return <Outlet />;
-}
-
-// Waits for the session restore before any guard runs, so a refresh on a deep link does
-// not flash the login page. (The splash itself is shown by BootGate.)
-export function RequireBootstrapped() {
-  const bootstrapped = useSelector(selectBootstrapped);
-  return bootstrapped ? <Outlet /> : null;
 }

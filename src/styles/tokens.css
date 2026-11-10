@@ -1,0 +1,28 @@
+/* Design tokens (plan.md W1). Tailwind v4 reads `@theme` and generates matching utilities:
+   bg-brand-600, text-brand-700, font-sans ... The brand blue is the mobile app's #2563eb. */
+@theme {
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+
+  /* Noto Sans Devanagari is loaded in index.html so Hindi text renders everywhere. */
+  --font-sans: 'Inter', 'Noto Sans Devanagari', system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background: #f8fafc;
+    color: #0f172a;
+    font-family: var(--font-sans);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
+}
