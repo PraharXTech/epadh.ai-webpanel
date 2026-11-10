@@ -61,7 +61,10 @@ export default function SyllabusRow({
 
   if (to && !locked) {
     return (
-      <Link to={to} aria-current={current ? 'page' : undefined} className={className}>
+      <Link
+        to={to}
+        aria-current={current ? 'page' : undefined}
+        className={className}>
         {content}
       </Link>
     );

@@ -27,3 +27,56 @@
     outline-offset: 2px;
   }
 }
+
+/* Admin-authored study articles (features/material/components/HtmlViewer.jsx). The viewer sets
+   font-size on the wrapper; everything here is in `em`, so the A- / A+ buttons scale it all. */
+.material-html h2 {
+  font-size: 1.35em;
+  font-weight: 800;
+  margin: 0.25em 0 0.55em;
+}
+.material-html h3 {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 1em 0 0.3em;
+}
+.material-html p {
+  margin: 0.3em 0 0.6em;
+}
+.material-html ul {
+  list-style: disc;
+  padding-left: 1.3em;
+  margin: 0.3em 0 0.6em;
+}
+.material-html ol {
+  list-style: decimal;
+  padding-left: 1.3em;
+  margin: 0.3em 0 0.6em;
+}
+.material-html li {
+  margin-bottom: 0.25em;
+}
+.material-html b,
+.material-html strong {
+  font-weight: 700;
+}
+.material-html a {
+  color: var(--color-brand-600);
+  text-decoration: underline;
+}
+.material-html img,
+.material-html video {
+  max-width: 100%;
+  height: auto;
+}
+.material-html table {
+  border-collapse: collapse;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+}
+.material-html th,
+.material-html td {
+  border: 1px solid #cbd5e1;
+  padding: 0.35em 0.6em;
+}

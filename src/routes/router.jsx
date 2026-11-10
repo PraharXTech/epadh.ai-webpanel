@@ -7,6 +7,12 @@ import PublicLayout from '@/layouts/PublicLayout';
 import ExamSelectionPage from '@/features/exams/pages/ExamSelectionPage';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import OtpPage from '@/features/auth/pages/OtpPage';
+import MaterialPage from '@/features/material/pages/MaterialPage';
+import MaterialViewerPage from '@/features/material/pages/MaterialViewerPage';
+import ChapterListPage from '@/features/syllabus/pages/ChapterListPage';
+import SubjectListPage from '@/features/syllabus/pages/SubjectListPage';
+import TopicDetailPage from '@/features/syllabus/pages/TopicDetailPage';
+import TopicListPage from '@/features/syllabus/pages/TopicListPage';
 import NotFoundPage from '@/pages/public/NotFoundPage';
 import PlaceholderPage from '@/pages/PlaceholderPage';
 import { OnboardingOnly, PublicOnly, RequireAuth, RequireExam } from './guards';
@@ -87,26 +93,11 @@ export const router = createBrowserRouter([
             element: <AppLayout />,
             children: [
               { path: PATHS.home, element: ph('Home', 'HomeScreen', 'W6') },
-              {
-                path: PATHS.syllabus,
-                element: ph('Syllabus', 'SubjectListScreen', 'W4'),
-              },
-              {
-                path: PATTERNS.subject,
-                element: ph('Chapters', 'ChapterListScreen', 'W4'),
-              },
-              {
-                path: PATTERNS.chapter,
-                element: ph('Topics', 'TopicListScreen', 'W4'),
-              },
-              {
-                path: PATTERNS.topic,
-                element: ph('Topic', 'TopicDetailScreen', 'W4'),
-              },
-              {
-                path: PATHS.studyMaterial,
-                element: ph('Study material', 'MaterialScreen', 'W4'),
-              },
+              { path: PATHS.syllabus, element: <SubjectListPage /> },
+              { path: PATTERNS.subject, element: <ChapterListPage /> },
+              { path: PATTERNS.chapter, element: <TopicListPage /> },
+              { path: PATTERNS.topic, element: <TopicDetailPage /> },
+              { path: PATHS.studyMaterial, element: <MaterialPage /> },
               { path: PATHS.tests, element: ph('Tests', 'TestsScreen', 'W8') },
               {
                 path: PATTERNS.practiceSetup,
@@ -231,10 +222,7 @@ export const router = createBrowserRouter([
                 path: PATHS.examSelect,
                 element: <ExamSelectionPage changing />,
               },
-              {
-                path: PATTERNS.material,
-                element: ph('Material', 'MaterialViewerScreen', 'W4'),
-              },
+              { path: PATTERNS.material, element: <MaterialViewerPage /> },
               {
                 path: PATHS.practiceSession,
                 element: ph('Practice session', 'PracticeSessionScreen', 'W5'),
