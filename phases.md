@@ -206,18 +206,19 @@ Mobile files for this phase:
 
 ---
 
-## W3 — Auth, session and exam selection (3–4 days)
+## W3 — Auth, session and exam selection (3–4 days) — **done**, see notes at the end of this section
 
-Ports mobile Phase 1. Mobile status was "done except FCM"; web does the same and **adds real Google sign-in** (plan.md §10 q5).
+Ports mobile Phase 1. Mobile status was "done except FCM"; web does the same and **adds the real Google sign-in wiring** (plan.md §10 q5).
 
-- [ ] Login page (mobile + OTP), OTP page (6 boxes, paste support, `autocomplete="one-time-code"`, 30 s resend, change number), shared `AuthLayout` (split screen on desktop)
-- [ ] `/login/otp` without `location.state.mobile` redirects to `/login`
-- [ ] Session bootstrap: `bootstrapSession` thunk copied, `GET /me`, refresh once on 401, clear on failure
-- [ ] `RequireAuth` / `RequireExam` flow: no token → `/login`; no exam → `/onboarding/exam`; else the app. Post-login redirect back to the page the user wanted
-- [ ] Exam selection: searchable list, multi-exam as on mobile, modal route `/exams/select`, change exam from Profile
-- [ ] Logout: revoke on the server, clear tokens, every slice resets on `auth/logout`, persisted store purged, other tabs follow
-- [ ] Google sign-in button (real Google Identity Services, falls back to a disabled state with a message if the client id is missing)
-- [ ] Port: `session.test.js`, `validation.test.js`, `multiExam.test.js`, `examSelection*.test.jsx`
+- [x] Login page (mobile + OTP), OTP page (6 boxes over one real input: paste, `autocomplete="one-time-code"`, 30 s resend, change number), shared `AuthLayout` (banner on top on phones, split screen from 1024 px)
+- [x] `/login/otp` without `location.state.mobile` redirects to `/login`
+- [x] Session bootstrap: `bootstrapSession` thunk copied (tested by the ported `session.test.js`). The refresh-once-on-401 logic is the copied API client; no web test exercises it yet
+- [x] Route flow: no token → `/login`; no exam → `/onboarding/exam`; else the app. The page the student wanted is remembered (`location.state.from`) and used after login. Tested: guards, the remembered link, and the whole login → OTP → exam → Home journey
+- [x] Exam selection: searchable list, multi-exam as on mobile, first-run page with a **Log out** link (new, for a wrong account), "change exams" page at `/exams/select`
+- [ ] Change exams **from Profile** (the page exists; the Profile link arrives with W12)
+- [x] Logout: best-effort `POST /auth/logout` to revoke the session (new on web, mobile never did this), then tokens cleared, every slice reset on `auth/logout`, other tabs follow
+- [x] Google sign-in: three modes (mock button in mock mode; Google's own button when `VITE_GOOGLE_CLIENT_ID` is set; disabled with a note when it is not). **Not tested against real Google**: the real mode is unit-tested with a stubbed `window.google`, and the backend endpoint `POST /auth/google { idToken }` is a new contract to agree with PraharX
+- [x] Port: `session.test.js`, `validation.test.js`, `multiExam.test.js` (all in W1) and `examSelection*.test.jsx` → `tests/integration/examSelection.test.jsx` + `authFlow.test.jsx`
 
 Mobile files for this phase:
 
@@ -226,8 +227,8 @@ Mobile files for this phase:
 *auth*
 
 - [x] `features/auth/hooks/useCountdown.js`
-- [x] `features/auth/services/authService.js`
-- [x] `features/auth/store/authSlice.js`
+- [x] `features/auth/services/authService.js` — two web additions: `loginWithGoogle({ idToken })` real branch, `revokeSession()`
+- [x] `features/auth/store/authSlice.js` — `logoutUser` now calls `revokeSession()` first
 - [x] `features/auth/store/sessionThunks.js`
 - [x] `features/auth/utils/confirmLogout.js`
 
@@ -262,21 +263,33 @@ Mobile files for this phase:
 
 *auth*
 
-- [ ] `features/auth/components/AuthLayout.jsx`
-- [ ] `features/auth/components/CountryCode.jsx`
-- [ ] `features/auth/components/GoogleButton.jsx`
-- [ ] `features/auth/components/OtpInput.jsx`
-- [ ] `features/auth/screens/LoginScreen.jsx` → `features/auth/pages/LoginPage.jsx`
-- [ ] `features/auth/screens/OtpScreen.jsx` → `features/auth/pages/OtpPage.jsx`
+- [x] `features/auth/components/AuthLayout.jsx`
+- [x] `features/auth/components/CountryCode.jsx`
+- [x] `features/auth/components/GoogleButton.jsx`
+- [x] `features/auth/components/OtpInput.jsx`
+- [x] `features/auth/screens/LoginScreen.jsx` → `features/auth/pages/LoginPage.jsx`
+- [x] `features/auth/screens/OtpScreen.jsx` → `features/auth/pages/OtpPage.jsx`
 
 *exams*
 
-- [ ] `features/exams/components/ExamCard.jsx`
-- [ ] `features/exams/components/ExamFilterChips.jsx`
-- [ ] `features/exams/screens/ExamSelectionScreen.jsx` → `features/exams/pages/ExamSelectionPage.jsx`
+- [x] `features/exams/components/ExamCard.jsx`
+- [x] `features/exams/components/ExamFilterChips.jsx`
+- [x] `features/exams/screens/ExamSelectionScreen.jsx` → `features/exams/pages/ExamSelectionPage.jsx`
 
+**New on the web:** `features/auth/hooks/useGoogleIdentity.js` (loads Google Identity Services), `tests/utils/renderWithRealStore.jsx`.
 
-**Done when:** a new user can sign in with OTP, choose an exam, reload the tab and land on Home; logout wipes everything in all tabs; an expired token refreshes silently.
+**Done when:** a new user can sign in with OTP, choose an exam, reload the tab and land on Home; logout wipes everything in all tabs; an expired token refreshes silently. (Met in automated tests with the mock services, 33 new tests. **Not checked in a real browser**: the layout of the login / OTP / exam pages, a real tab reload, and the silent token refresh against a real API.)
+
+**W3 notes and deliberate differences**
+
+- **OTP input is one real `<input>`** with six decorative boxes drawn over it, not six inputs. Paste, SMS autofill and screen readers just work. It has **no `maxLength`** on purpose: a browser would cut a pasted `482 915` to 6 characters before the space is stripped, losing a digit (a test found this).
+- **Direct visit to `/login/otp`** (no number in router state) goes to `/login`. Back and "Change" go one step in history, or to `/login` when there is none.
+- **`/exams/select` is a full page** (no sidebar or tabs), not a modal route as plan.md §4 first said: it has its own sticky Save bar, which would clash with the bottom tab bar.
+- **Login and OTP skip `PublicLayout`** (they bring their own full-bleed layout), so the router lists them separately from Terms and Privacy.
+- **Login banner** was a 1.6 MB PNG in the mobile app. It is a 53 KB WebP here (`src/assets/images/authbanner.webp`, converted with `sharp`). Convert the other mobile banners the same way when their pages arrive (HeroBanner, Membership).
+- **Mock mode OTP rules** are unchanged from mobile: any 6 digits work, `000000` is rejected.
+- **Env:** new optional `VITE_GOOGLE_CLIENT_ID` (see `.env.example`).
+- **Test isolation:** the token cache is in memory, so the full-flow tests call `clearTokens()` in `beforeEach` as the real logout does.
 
 ---
 

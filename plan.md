@@ -106,7 +106,7 @@ React Navigation screen names become URLs. Params that were `route.params` becom
 | Mobile screen | Web route | Params |
 |---|---|---|
 | ExamOnboarding | `/onboarding/exam` | shown instead of everything else while no exam is selected (`<RequireExam>`) |
-| ExamSelection (modal) | `/exams/select` | opens as a modal route over the current page |
+| ExamSelection (modal) | `/exams/select` | a full page without sidebar or tabs (its own sticky Save bar), reached from Profile and the sidebar |
 | Home (tab) | `/` | |
 | Exams / SubjectList (tab) | `/syllabus` | |
 | ChapterList | `/syllabus/:examId/:subjectId` | `subjectId, examId` |
