@@ -30,13 +30,18 @@ describe('mock test attempt', () => {
     store.dispatch(logout());
   });
 
-  it('starts a session with the test\'s own question count, sections and duration', async () => {
+  it("starts a session with the test's own question count, sections and duration", async () => {
     await start('subject-quant');
     const session = selectMockSession(store.getState());
     expect(session.testId).toBe('subject-quant');
     expect(session.questions).toHaveLength(25);
     expect(session.sections).toEqual([
-      { subjectId: 'quant', subjectName: 'Quantitative Aptitude', start: 0, end: 24 },
+      {
+        subjectId: 'quant',
+        subjectName: 'Quantitative Aptitude',
+        start: 0,
+        end: 24,
+      },
     ]);
     expect(session.durationSec).toBe(25 * 60);
     expect(session.endsAt).toBeGreaterThan(Date.now());
@@ -45,7 +50,11 @@ describe('mock test attempt', () => {
   it('builds multiple sections for a full mock', async () => {
     await start('full-01');
     const session = selectMockSession(store.getState());
-    expect(session.sections.map(s => s.subjectId)).toEqual(['quant', 'reasoning', 'gk']);
+    expect(session.sections.map(s => s.subjectId)).toEqual([
+      'quant',
+      'reasoning',
+      'gk',
+    ]);
   });
 
   it('rejects starting an unknown test', async () => {
@@ -118,7 +127,9 @@ describe('mock attempt: server clock, offline submit and autosave', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('anchors the deadline to the server clock, not the phone clock', async () => {
-    jest.spyOn(service, 'fetchServerTime').mockResolvedValue(Date.now() + 60 * 60 * 1000);
+    jest
+      .spyOn(service, 'fetchServerTime')
+      .mockResolvedValue(Date.now() + 60 * 60 * 1000);
     await start('subject-quant');
     const session = selectMockSession(store.getState());
     expect(session.clockOffset).toBeGreaterThan(59 * 60 * 1000);
@@ -130,7 +141,9 @@ describe('mock attempt: server clock, offline submit and autosave', () => {
     await start('subject-quant');
     const session = selectMockSession(store.getState());
     store.dispatch(selectOption(session.questions[0].answer));
-    jest.spyOn(service, 'submitMockAttempt').mockRejectedValueOnce(new Error('offline'));
+    jest
+      .spyOn(service, 'submitMockAttempt')
+      .mockRejectedValueOnce(new Error('offline'));
 
     const promise = store.dispatch(submitMock());
     await jest.advanceTimersByTimeAsync(1000);
@@ -158,7 +171,9 @@ describe('mock attempt: server clock, offline submit and autosave', () => {
 
   it('autosave marks the attempt offline on failure and saved once it goes through', async () => {
     await start('subject-quant');
-    jest.spyOn(service, 'saveMockAnswers').mockRejectedValueOnce(new Error('offline'));
+    jest
+      .spyOn(service, 'saveMockAnswers')
+      .mockRejectedValueOnce(new Error('offline'));
     let promise = store.dispatch(syncAnswers());
     await jest.advanceTimersByTimeAsync(500);
     await promise;

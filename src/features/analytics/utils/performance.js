@@ -82,9 +82,7 @@ export const buildPerformance = ({
   // its marks (negative marking included).
   const scores = [
     ...practiceIn.map(p => percent(p.correct, p.total)),
-    ...mockIn.map(m =>
-      Math.max(0, percent(m.score, m.maxScore)),
-    ),
+    ...mockIn.map(m => Math.max(0, percent(m.score, m.maxScore))),
   ];
 
   const subjectMap = new Map();

@@ -35,7 +35,10 @@ const addLocal = (state, item) => {
   if (state.items.some(n => n.id === item.id)) {
     return;
   }
-  state.items = [{ read: false, link: null, ...item, createdAt: Date.now() }, ...state.items];
+  state.items = [
+    { read: false, link: null, ...item, createdAt: Date.now() },
+    ...state.items,
+  ];
 };
 
 const paymentDone = (state, action) => {
@@ -66,7 +69,9 @@ const notificationsSlice = createSlice({
     },
     dismissNotification: (state, action) => {
       state.items = state.items.filter(n => n.id !== action.payload);
-      state.dismissed = [...state.dismissed, action.payload].slice(-MAX_KEPT * 2);
+      state.dismissed = [...state.dismissed, action.payload].slice(
+        -MAX_KEPT * 2,
+      );
     },
     clearNotifications: state => {
       state.dismissed = [
@@ -115,8 +120,12 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { markRead, markAllRead, dismissNotification, clearNotifications } =
-  notificationsSlice.actions;
+export const {
+  markRead,
+  markAllRead,
+  dismissNotification,
+  clearNotifications,
+} = notificationsSlice.actions;
 
 // Shows it as read at once and tells the server in the background.
 export const openNotification = id => (dispatch, getState) => {

@@ -16,7 +16,9 @@ describe('FAQ search', () => {
 
   it('matches words in the question or the answer, in any order and case', () => {
     expect(filterFaqs(FAQS, 'REFUND').map(f => f.id)).toContain('refund');
-    expect(filterFaqs(FAQS, 'deducted pro').map(f => f.id)).toEqual(['pay-failed']);
+    expect(filterFaqs(FAQS, 'deducted pro').map(f => f.id)).toEqual([
+      'pay-failed',
+    ]);
   });
 
   it('every word must match', () => {
@@ -26,7 +28,14 @@ describe('FAQ search', () => {
   it('has unique ids and every action points at a real screen name', () => {
     const ids = FAQS.map(f => f.id);
     expect(new Set(ids).size).toBe(ids.length);
-    const screens = ['EditProfile', 'History', 'Membership', 'PaymentHistory', 'Terms', 'DeleteAccount'];
+    const screens = [
+      'EditProfile',
+      'History',
+      'Membership',
+      'PaymentHistory',
+      'Terms',
+      'DeleteAccount',
+    ];
     FAQS.filter(f => f.action).forEach(f =>
       expect(screens).toContain(f.action.name),
     );
@@ -36,7 +45,11 @@ describe('FAQ search', () => {
 
 describe('support email', () => {
   it('builds a mailto link with the subject and body encoded', () => {
-    const url = buildMailto({ email: 'a@b.co', subject: 'Hi & bye', body: 'x y' });
+    const url = buildMailto({
+      email: 'a@b.co',
+      subject: 'Hi & bye',
+      body: 'x y',
+    });
     expect(url).toBe('mailto:a@b.co?subject=Hi%20%26%20bye&body=x%20y');
   });
 
@@ -67,7 +80,9 @@ describe('legal content', () => {
     const headings = doc.sections.map(s => s.heading);
     expect(new Set(headings).size).toBe(headings.length);
     doc.sections.forEach(s =>
-      expect((s.paragraphs?.length ?? 0) + (s.bullets?.length ?? 0)).toBeGreaterThan(0),
+      expect(
+        (s.paragraphs?.length ?? 0) + (s.bullets?.length ?? 0),
+      ).toBeGreaterThan(0),
     );
   });
 });

@@ -1,8 +1,9 @@
 {
+  "arrowParens": "avoid",
+  "bracketSameLine": true,
+  "bracketSpacing": true,
   "singleQuote": true,
-  "semi": false,
   "trailingComma": "all",
-  "printWidth": 100,
   "plugins": ["prettier-plugin-tailwindcss"],
   "tailwindStylesheet": "./src/index.css"
 }

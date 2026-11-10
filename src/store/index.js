@@ -115,10 +115,7 @@ const appReducer = combineReducers({
     },
     studyReducer,
   ),
-  settings: persistReducer(
-    { key: 'settings', storage },
-    settingsReducer,
-  ),
+  settings: persistReducer({ key: 'settings', storage }, settingsReducer),
   home: persistReducer(
     {
       key: 'home',
@@ -140,7 +137,13 @@ const appReducer = combineReducers({
     {
       key: 'mock',
       storage,
-      whitelist: ['session', 'result', 'history', 'savedResults', 'pendingRank'],
+      whitelist: [
+        'session',
+        'result',
+        'history',
+        'savedResults',
+        'pendingRank',
+      ],
     },
     mockReducer,
   ),

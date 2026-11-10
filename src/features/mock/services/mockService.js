@@ -179,5 +179,8 @@ export const fetchServerTime = async () => {
 // the slice turns into "will sync when you are back online".
 export const saveMockAnswers = async ({ answers, marked }) => {
   await delay(200);
-  return { saved: Object.keys(answers).length, marked: Object.keys(marked).length };
+  return {
+    saved: Object.keys(answers).length,
+    marked: Object.keys(marked).length,
+  };
 };

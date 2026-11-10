@@ -4,7 +4,14 @@ export const buildMailto = ({ email, subject, body }) =>
   }`;
 
 // What support needs to look into a problem, added under the student's own message.
-export const buildSupportBody = ({ lead = '', version, platform, osVersion, userName, mobile }) =>
+export const buildSupportBody = ({
+  lead = '',
+  version,
+  platform,
+  osVersion,
+  userName,
+  mobile,
+}) =>
   [
     lead,
     '',

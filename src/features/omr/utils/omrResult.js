@@ -42,7 +42,8 @@ export const scoreSheet = ({ answers, sections, marking }) => {
       unattempted: rows.length - correct - wrong,
       marks: rows.reduce((sum, a) => sum + a.marks, 0),
       maxMarks: rows.length * marking.correct,
-      accuracy: correct + wrong ? Math.round((correct / (correct + wrong)) * 100) : 0,
+      accuracy:
+        correct + wrong ? Math.round((correct / (correct + wrong)) * 100) : 0,
     };
   });
 

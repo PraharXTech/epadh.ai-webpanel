@@ -1,9 +1,15 @@
 import { generateMockPaper } from '@/features/mock/utils/questionGenerator';
-import { buildMockResult, perQuestionMarks } from '@/features/mock/utils/scoring';
+import {
+  buildMockResult,
+  perQuestionMarks,
+} from '@/features/mock/utils/scoring';
 
 describe('mock question generator', () => {
   it('generates the requested count, split evenly across subjects', () => {
-    const paper = generateMockPaper({ subjects: ['quant', 'reasoning', 'gk'], count: 90 });
+    const paper = generateMockPaper({
+      subjects: ['quant', 'reasoning', 'gk'],
+      count: 90,
+    });
     expect(paper).toHaveLength(90);
     const bySubject = paper.reduce((counts, q) => {
       counts[q.subjectId] = (counts[q.subjectId] ?? 0) + 1;
@@ -13,12 +19,18 @@ describe('mock question generator', () => {
   });
 
   it('splits an uneven count across subjects without losing questions', () => {
-    const paper = generateMockPaper({ subjects: ['quant', 'reasoning'], count: 25 });
+    const paper = generateMockPaper({
+      subjects: ['quant', 'reasoning'],
+      count: 25,
+    });
     expect(paper).toHaveLength(25);
   });
 
   it('gives every question a correct answer among its own options, with unique options', () => {
-    const paper = generateMockPaper({ subjects: ['quant', 'reasoning', 'gk'], count: 60 });
+    const paper = generateMockPaper({
+      subjects: ['quant', 'reasoning', 'gk'],
+      count: 60,
+    });
     paper.forEach(q => {
       expect(q.options).toHaveLength(4);
       expect(new Set(q.options).size).toBe(4);
@@ -29,7 +41,10 @@ describe('mock question generator', () => {
   });
 
   it('keeps each subject as a single contiguous block', () => {
-    const paper = generateMockPaper({ subjects: ['quant', 'reasoning', 'gk'], count: 30 });
+    const paper = generateMockPaper({
+      subjects: ['quant', 'reasoning', 'gk'],
+      count: 30,
+    });
     const seen = new Set();
     let lastSubject = null;
     paper.forEach(q => {
@@ -67,7 +82,11 @@ describe('mock scoring', () => {
   });
 
   it('awards full marks for correct, none for unattempted, and a fraction off for wrong', () => {
-    const questions = [Q('q1', 'quant', 0), Q('q2', 'quant', 0), Q('q3', 'quant', 0)];
+    const questions = [
+      Q('q1', 'quant', 0),
+      Q('q2', 'quant', 0),
+      Q('q3', 'quant', 0),
+    ];
     const s = session({
       questions,
       answers: { q1: 0, q2: 1 }, // q1 correct, q2 wrong, q3 unattempted
@@ -86,7 +105,11 @@ describe('mock scoring', () => {
   it('applies no negative marking when the test has none', () => {
     const questions = [Q('q1', 'quant', 0)];
     const s = session({ questions, answers: { q1: 1 } }); // wrong
-    const result = buildMockResult(s, { ...test, questions: 1, marks: 2, negativePerWrong: 0 }, 10);
+    const result = buildMockResult(
+      s,
+      { ...test, questions: 1, marks: 2, negativePerWrong: 0 },
+      10,
+    );
     expect(result.score).toBe(0);
     expect(result.negativeApplied).toBe(0);
   });
@@ -101,9 +124,21 @@ describe('mock scoring', () => {
     const result = buildMockResult(s, { ...test, questions: 3, marks: 6 }, 30);
 
     const quant = result.sectionStats.find(x => x.subjectId === 'quant');
-    const reasoning = result.sectionStats.find(x => x.subjectId === 'reasoning');
-    expect(quant).toMatchObject({ total: 2, correct: 1, wrong: 1, unattempted: 0 });
-    expect(reasoning).toMatchObject({ total: 1, correct: 1, wrong: 0, unattempted: 0 });
+    const reasoning = result.sectionStats.find(
+      x => x.subjectId === 'reasoning',
+    );
+    expect(quant).toMatchObject({
+      total: 2,
+      correct: 1,
+      wrong: 1,
+      unattempted: 0,
+    });
+    expect(reasoning).toMatchObject({
+      total: 1,
+      correct: 1,
+      wrong: 0,
+      unattempted: 0,
+    });
   });
 
   it('marks each review item as marked-for-review when it was', () => {

@@ -4,7 +4,8 @@ import { useSyncExternalStore } from 'react';
 // (thunks, guards) read the same thing. Web port of the NetInfo version: the browser
 // only tells us `navigator.onLine`, which is reliable for "definitely offline" and
 // optimistic for "online" (the API client still handles real request failures).
-let online = typeof navigator === 'undefined' ? true : navigator.onLine !== false;
+let online =
+  typeof navigator === 'undefined' ? true : navigator.onLine !== false;
 const listeners = new Set();
 
 const apply = next => {

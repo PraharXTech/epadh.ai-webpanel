@@ -44,7 +44,12 @@ describe('daily plan', () => {
   });
 
   it('Pro: weak topics first, then two study topics', () => {
-    const tasks = buildDailyPlan({ topics, weakTopics: weak, pro: true, now: NOW });
+    const tasks = buildDailyPlan({
+      topics,
+      weakTopics: weak,
+      pro: true,
+      now: NOW,
+    });
     expect(types(tasks).slice(0, 2)).toEqual(['weak', 'weak']);
     expect(types(tasks).filter(t => t === 'study')).toHaveLength(2);
   });
@@ -64,7 +69,12 @@ describe('daily plan', () => {
   });
 
   it('plans seven days, with a mock on some of them only', () => {
-    const week = buildWeekPlan({ topics, weakTopics: weak, pro: true, now: NOW });
+    const week = buildWeekPlan({
+      topics,
+      weakTopics: weak,
+      pro: true,
+      now: NOW,
+    });
     expect(week).toHaveLength(7);
     const mocks = week.filter(d => d.tasks.some(t => t.type === 'mock'));
     expect(mocks.length).toBeGreaterThan(0);
@@ -74,7 +84,11 @@ describe('daily plan', () => {
 
 describe('task done from real activity', () => {
   const start = new Date(NOW).setHours(0, 0, 0, 0);
-  const task = (type, refId = 'p1') => ({ id: `${type}-${refId}`, type, refId });
+  const task = (type, refId = 'p1') => ({
+    id: `${type}-${refId}`,
+    type,
+    refId,
+  });
 
   it('study: a session today or the topic completed', () => {
     expect(isTaskDone(task('study'), { now: NOW })).toBe(false);
@@ -84,7 +98,9 @@ describe('task done from real activity', () => {
         sessions: [{ type: 'study', refId: 'p1', end: start + 1000 }],
       }),
     ).toBe(true);
-    expect(isTaskDone(task('study'), { now: NOW, completed: { p1: true } })).toBe(true);
+    expect(
+      isTaskDone(task('study'), { now: NOW, completed: { p1: true } }),
+    ).toBe(true);
   });
 
   it('ignores yesterday and other topics', () => {
@@ -101,13 +117,24 @@ describe('task done from real activity', () => {
 
   it('practice and weak: a finished practice test today on the topic', () => {
     const practiceHistory = [{ topicId: 'p1', finishedAt: start + 5000 }];
-    expect(isTaskDone(task('practice'), { now: NOW, practiceHistory })).toBe(true);
+    expect(isTaskDone(task('practice'), { now: NOW, practiceHistory })).toBe(
+      true,
+    );
     expect(isTaskDone(task('weak'), { now: NOW, practiceHistory })).toBe(true);
-    expect(isTaskDone(task('weak', 'other'), { now: NOW, practiceHistory })).toBe(false);
+    expect(
+      isTaskDone(task('weak', 'other'), { now: NOW, practiceHistory }),
+    ).toBe(false);
   });
 
   it('mock: any mock finished today', () => {
-    expect(isTaskDone(task('mock', null), { now: NOW, mockHistory: [{ finishedAt: start + 5 }] })).toBe(true);
-    expect(isTaskDone(task('mock', null), { now: NOW, mockHistory: [] })).toBe(false);
+    expect(
+      isTaskDone(task('mock', null), {
+        now: NOW,
+        mockHistory: [{ finishedAt: start + 5 }],
+      }),
+    ).toBe(true);
+    expect(isTaskDone(task('mock', null), { now: NOW, mockHistory: [] })).toBe(
+      false,
+    );
   });
 });

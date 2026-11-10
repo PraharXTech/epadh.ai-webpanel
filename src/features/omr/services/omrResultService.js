@@ -93,7 +93,10 @@ const buildMock = (scanId, studentName) => {
       const correct = pickOption();
       let marked = null;
       if (random() < 0.88) {
-        marked = random() < strength ? correct : (correct + 1 + Math.floor(random() * 3)) % 4;
+        marked =
+          random() < strength
+            ? correct
+            : (correct + 1 + Math.floor(random() * 3)) % 4;
       }
       answers.push({ no: answers.length + 1, section, marked, correct });
     }
@@ -126,7 +129,9 @@ const buildMock = (scanId, studentName) => {
     rank: entry.rank,
     name: entry.isYou ? entry.name : maskName(entry.name),
     score: entry.score,
-    accuracy: entry.attempted ? Math.round((entry.correct / entry.attempted) * 100) : 0,
+    accuracy: entry.attempted
+      ? Math.round((entry.correct / entry.attempted) * 100)
+      : 0,
     isYou: Boolean(entry.isYou),
   }));
   const mine = ranked.find(entry => entry.isYou);

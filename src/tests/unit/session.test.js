@@ -73,4 +73,3 @@ describe('session flow', () => {
     expect(store.getState().auth.bootstrapped).toBe(true);
   });
 });
-

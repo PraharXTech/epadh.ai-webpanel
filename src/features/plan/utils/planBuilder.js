@@ -8,15 +8,30 @@ import { dayKey } from '@/utils/date';
 const DAY_MS = 86400000;
 
 export const TASK_TYPES = {
-  weak: { label: 'Weak topic', icon: 'target', color: '#dc2626', bg: 'bg-red-50' },
-  study: { label: 'Study', icon: 'book-open', color: '#2563eb', bg: 'bg-blue-50' },
+  weak: {
+    label: 'Weak topic',
+    icon: 'target',
+    color: '#dc2626',
+    bg: 'bg-red-50',
+  },
+  study: {
+    label: 'Study',
+    icon: 'book-open',
+    color: '#2563eb',
+    bg: 'bg-blue-50',
+  },
   practice: {
     label: 'Practice',
     icon: 'file-text',
     color: '#16a34a',
     bg: 'bg-green-50',
   },
-  revise: { label: 'Revise', icon: 'repeat', color: '#7c3aed', bg: 'bg-violet-50' },
+  revise: {
+    label: 'Revise',
+    icon: 'repeat',
+    color: '#7c3aed',
+    bg: 'bg-violet-50',
+  },
   mock: {
     label: 'Mock test',
     icon: 'clipboard-check',
@@ -144,7 +159,13 @@ export const buildWeekPlan = ({ now = Date.now(), ...rest }) =>
 // Has the student done this task today? From real activity, so nothing to tick by hand.
 export const isTaskDone = (
   task,
-  { sessions = [], practiceHistory = [], mockHistory = [], completed = {}, now },
+  {
+    sessions = [],
+    practiceHistory = [],
+    mockHistory = [],
+    completed = {},
+    now,
+  },
 ) => {
   const start = new Date(now).setHours(0, 0, 0, 0);
   const sessionToday = types =>

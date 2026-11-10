@@ -15,7 +15,8 @@ import {
 
 const NOW = new Date(2026, 9, 10, 15, 0).getTime(); // 10 Oct 2026, local
 const at = (day, month = 9) => new Date(2026, month, day, 12, 0).getTime();
-const days = (...list) => activeDayKeys({ practice: list.map(d => ({ finishedAt: at(d) })) });
+const days = (...list) =>
+  activeDayKeys({ practice: list.map(d => ({ finishedAt: at(d) })) });
 
 describe('streak', () => {
   it('is zero with no activity', () => {
@@ -44,7 +45,9 @@ describe('streak', () => {
         { finishedAt: new Date(2026, 9, 1, 10).getTime() },
       ],
     });
-    expect(computeStreak(set, new Date(2026, 9, 1, 20).getTime()).current).toBe(2);
+    expect(computeStreak(set, new Date(2026, 9, 1, 20).getTime()).current).toBe(
+      2,
+    );
   });
 
   it('counts study sessions and mocks as active days too', () => {

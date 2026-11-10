@@ -40,7 +40,10 @@ describe('notification helpers', () => {
     ];
     const groups = groupByDay(items, NOW);
     expect(groups.map(g => g.title)).toEqual(['Today', 'Yesterday', 'Earlier']);
-    expect(groups[0].data.map(n => n.id)).toEqual(['today-late', 'today-early']);
+    expect(groups[0].data.map(n => n.id)).toEqual([
+      'today-late',
+      'today-early',
+    ]);
     expect(groupByDay([items[0]], NOW).map(g => g.title)).toEqual(['Earlier']);
   });
 
@@ -94,7 +97,9 @@ describe('notifications store', () => {
     await jest.advanceTimersByTimeAsync(60000);
     await load();
     expect(selectUnreadNotificationCount(store.getState())).toBe(0);
-    expect(selectNotifications(store.getState()).map(n => n.createdAt)).toEqual(seen);
+    expect(selectNotifications(store.getState()).map(n => n.createdAt)).toEqual(
+      seen,
+    );
   });
 
   it('a dismissed notification does not come back on refresh', async () => {
@@ -131,7 +136,9 @@ describe('notifications store', () => {
     expect(payment.body).toContain('Pro Monthly');
     await load();
     expect(
-      selectNotifications(store.getState()).some(n => n.id === 'local-pay-pay_1'),
+      selectNotifications(store.getState()).some(
+        n => n.id === 'local-pay-pay_1',
+      ),
     ).toBe(true);
   });
 });

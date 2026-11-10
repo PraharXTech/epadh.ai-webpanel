@@ -6,7 +6,8 @@ export const PYQ_FEATURE = 'advancedMocks';
 export const sortPapers = papers =>
   [...papers].sort(
     (a, b) =>
-      b.year - a.year || String(a.shift ?? '').localeCompare(String(b.shift ?? '')),
+      b.year - a.year ||
+      String(a.shift ?? '').localeCompare(String(b.shift ?? '')),
   );
 
 // Distinct years, newest first.

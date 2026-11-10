@@ -159,7 +159,7 @@ const indexOf = tree => {
 const selectIndex = (state, examId) =>
   indexOf(
     examId
-      ? selectSyllabusTreesByExam(state)[examId] ?? NO_TREE
+      ? (selectSyllabusTreesByExam(state)[examId] ?? NO_TREE)
       : selectSyllabusTree(state),
   );
 

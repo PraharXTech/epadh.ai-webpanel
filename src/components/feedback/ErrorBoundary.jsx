@@ -19,16 +19,19 @@ export default class ErrorBoundary extends Component {
       return this.props.children;
     }
     return (
-      <div role="alert" className="flex min-h-dvh flex-col items-center justify-center gap-3 p-6 text-center">
-        <h1 className="text-xl font-bold text-slate-900">Something went wrong</h1>
+      <div
+        role="alert"
+        className="flex min-h-dvh flex-col items-center justify-center gap-3 p-6 text-center">
+        <h1 className="text-xl font-bold text-slate-900">
+          Something went wrong
+        </h1>
         <p className="max-w-sm text-sm text-slate-600">
           The page hit an unexpected error. Your saved progress is safe.
         </p>
         <button
           type="button"
           className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white"
-          onClick={() => window.location.reload()}
-        >
+          onClick={() => window.location.reload()}>
           Reload
         </button>
       </div>

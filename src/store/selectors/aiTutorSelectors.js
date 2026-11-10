@@ -7,7 +7,9 @@ export const selectActiveConversation = state =>
   state.aiTutor.conversations[state.aiTutor.activeId] ?? null;
 
 export const selectConversationList = state =>
-  state.aiTutor.order.map(id => state.aiTutor.conversations[id]).filter(Boolean);
+  state.aiTutor.order
+    .map(id => state.aiTutor.conversations[id])
+    .filter(Boolean);
 
 export const selectSendStatus = state => state.aiTutor.sendStatus;
 export const selectSendError = state => state.aiTutor.error;

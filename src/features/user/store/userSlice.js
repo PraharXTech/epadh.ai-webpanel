@@ -35,7 +35,9 @@ export const fetchMe = createAsyncThunk(
 export const chooseExam = createAsyncThunk(
   'user/chooseExam',
   async ({ examIds, examId }, { rejectWithValue }) => {
-    const ids = [...new Set([].concat(examIds ?? examId ?? []).filter(Boolean))];
+    const ids = [
+      ...new Set([].concat(examIds ?? examId ?? []).filter(Boolean)),
+    ];
     if (ids.length === 0) {
       return rejectWithValue('Pick at least one exam.');
     }
@@ -110,7 +112,8 @@ const userSlice = createSlice({
         state.profile = profile;
         // Keep the locally saved exams if the (mock) server has none. An older server
         // (or an older saved copy) only knows a single exam.
-        const ids = selectedExamIds ?? (selectedExamId ? [selectedExamId] : null);
+        const ids =
+          selectedExamIds ?? (selectedExamId ? [selectedExamId] : null);
         if (ids) {
           state.selectedExamIds = ids;
           state.selectedExamId = ids[0] ?? null;

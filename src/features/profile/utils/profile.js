@@ -65,8 +65,16 @@ export const computeStreak = (days, now = Date.now()) => {
 // The profile fields that count towards "complete your profile".
 export const profileCompleteness = ({ profile, hasAvatar }) => {
   const steps = [
-    { id: 'name', label: 'Add your name', done: Boolean(profile?.name?.trim()) },
-    { id: 'mobile', label: 'Add a phone number', done: Boolean(profile?.mobile) },
+    {
+      id: 'name',
+      label: 'Add your name',
+      done: Boolean(profile?.name?.trim()),
+    },
+    {
+      id: 'mobile',
+      label: 'Add a phone number',
+      done: Boolean(profile?.mobile),
+    },
     { id: 'email', label: 'Add your email', done: Boolean(profile?.email) },
     { id: 'avatar', label: 'Add a profile photo', done: hasAvatar },
     {
@@ -170,5 +178,7 @@ export const validateTargetDate = (value, now = Date.now()) => {
   if (!iso) {
     return 'Use the format DD/MM/YYYY';
   }
-  return daysUntilDate(iso, now) < 0 ? 'Pick a date that is not in the past' : null;
+  return daysUntilDate(iso, now) < 0
+    ? 'Pick a date that is not in the past'
+    : null;
 };

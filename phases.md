@@ -57,7 +57,7 @@ Goal: a web project that builds and has the right shape.
 
 ---
 
-## W1 — Platform layer (3–4 days)
+## W1 — Platform layer (3–4 days) — **done**, see notes at the end of this section
 
 Ports mobile Phase 0 and the infrastructure half of Phase 1 (1A, 1B). Nothing visible to the student yet except login-less shell and splash.
 
@@ -65,23 +65,23 @@ Install: `axios redux-persist lucide-react dompurify react-markdown` and dev `vi
 
 Work items:
 
-- [ ] Env: `.env.development`, `.env.production`, `.env.example` with `VITE_API_BASE_URL`, `VITE_USE_MOCK_API`, `VITE_APP_VERSION`
-- [ ] `config/env.js` (adapt), `config/brand.js` (copy, keep `BRAND`, `SUPPORT`, `LEGAL_LAST_UPDATED`)
-- [ ] Decide token storage (plan.md §3 / §10 q2) and write `services/storage/secureStorage.js` with the same three exports
-- [ ] `api/client.js`: axios instance, bearer interceptor, single-flight refresh queue, `getErrorMessage`, `setSessionExpiredHandler`. Copy the logic, swap storage
-- [ ] `store/index.js` with `redux-persist` on localStorage, all slices registered as their phase lands, `serializableCheck` ignored actions kept, **cross-tab logout** via the `storage` event
-- [ ] `services/network/network.js` on `navigator.onLine` (same exports); `OfflineBanner` comes in W2
-- [ ] Localization: copy `localization/` (`index.js`, `locales/en.js`, `locales/hi.js`), keep the "both files have the same keys" test
-- [ ] Toast service: `services/alerts/alertStore.js` kept as a thin wrapper over `react-hot-toast` (`showAlert(title, message, actions, opts)` → toast for info, `ConfirmDialog` for choices). `<Toaster />` mounted once in `app/`
-- [ ] Router: `routes/router.jsx` (`createBrowserRouter`), `routes/routePaths.js` (single table of paths from plan.md §4), guards `RequireAuth`, `RequireExam`, `RequireSession` (redirect when a guarded in-flow page is opened directly), exported `router` for `navigate()` outside React (replaces `navigationRef`, `goHome()`)
-- [ ] Layouts: `PublicLayout`, `AppLayout` (sidebar + top bar + mobile bottom bar), `FocusLayout`
-- [ ] Sidebar: rebuild `navigation/sidebar/sidebarItems.js` as `components/layout/sidebarItems.js` with `path` instead of `tab`/`screen`; `SidebarContent`, `SidebarProvider` (drawer state for < 1024 px)
-- [ ] `app/BootGate.jsx` (splash, min 0.9 s, runs `bootstrapSession`) and `app/Providers.jsx` (Redux Provider, PersistGate, RouterProvider, Toaster, ErrorBoundary)
-- [ ] `components/feedback/ErrorBoundary.jsx` (missing on mobile too) and `pages/public/NotFoundPage.jsx`
-- [ ] Theme tokens in `src/styles/tokens.css` using Tailwind v4 `@theme` (brand blue `#2563eb`, semantic colours used in `sidebarItems`, radii, shadows) and **Noto Sans Devanagari** loaded
-- [ ] Vitest config, `tests/utils/render.jsx` (port of `test-utils/render.jsx`: store + router + providers), jest-dom setup
-- [ ] Prettier + Tailwind class sorting, `npm run test`, `npm run format`, a CI script (`lint`, `test`, `build`)
-- [ ] Decide shared-package vs copy for `utils/store/services` (plan.md §1) and record the decision here
+- [x] Env: `.env.development`, `.env.production`, `.env.example` with `VITE_API_BASE_URL`, `VITE_USE_MOCK_API`, `VITE_APP_VERSION`
+- [x] `config/env.js` (adapt), `config/brand.js` (copy, keep `BRAND`, `SUPPORT`, `LEGAL_LAST_UPDATED`)
+- [x] Decide token storage (plan.md §3 / §10 q2) and write `services/storage/secureStorage.js` with the same three exports
+- [x] `api/client.js`: axios instance, bearer interceptor, single-flight refresh queue, `getErrorMessage`, `setSessionExpiredHandler`. Copy the logic, swap storage
+- [x] `store/index.js` with `redux-persist` on localStorage, all slices registered as their phase lands, `serializableCheck` ignored actions kept, **cross-tab logout** via the `storage` event
+- [x] `services/network/network.js` on `navigator.onLine` (same exports); `OfflineBanner` comes in W2
+- [x] Localization: copy `localization/` (`index.js`, `locales/en.js`, `locales/hi.js`), keep the "both files have the same keys" test
+- [x] Toast service: `services/alerts/alertStore.js` kept as a thin wrapper over `react-hot-toast` (`showAlert(title, message, actions, opts)` → toast for info, `ConfirmDialog` for choices). `<Toaster />` mounted once in `app/`
+- [x] Router: `routes/router.jsx` (`createBrowserRouter`), `routes/routePaths.js` (single table of paths from plan.md §4), guards `RequireAuth`, `RequireExam`, `RequireSession` (redirect when a guarded in-flow page is opened directly), exported `router` for `navigate()` outside React (replaces `navigationRef`, `goHome()`)
+- [x] Layouts: `PublicLayout`, `AppLayout` (sidebar + top bar + mobile bottom bar), `FocusLayout`
+- [x] Sidebar: rebuild `navigation/sidebar/sidebarItems.js` as `components/layout/sidebarItems.js` with `path` instead of `tab`/`screen`; `SidebarContent`, `SidebarProvider` (drawer state for < 1024 px)
+- [x] `app/BootGate.jsx` (splash, min 0.9 s, runs `bootstrapSession`) and `app/Providers.jsx` (Redux Provider, PersistGate, RouterProvider, Toaster, ErrorBoundary)
+- [x] `components/feedback/ErrorBoundary.jsx` (missing on mobile too) and `pages/public/NotFoundPage.jsx`
+- [x] Theme tokens in `src/styles/tokens.css` using Tailwind v4 `@theme` (brand blue `#2563eb`, semantic colours used in `sidebarItems`, radii, shadows) and **Noto Sans Devanagari** loaded
+- [x] Vitest config, `tests/utils/render.jsx` (port of `test-utils/render.jsx`: store + router + providers), jest-dom setup
+- [x] Prettier + Tailwind class sorting, `npm run test`, `npm run format`, a CI script (`lint`, `test`, `build`)
+- [x] Decide shared-package vs copy for `utils/store/services` (plan.md §1) and record the decision here
 
 Mobile files for this phase:
 
@@ -89,50 +89,63 @@ Mobile files for this phase:
 
 *api*
 
-- [ ] `api/client.js`
-- [ ] `api/endpoints/auth.js`
+- [x] `api/client.js`
+- [x] `api/endpoints/auth.js`
 
 *config*
 
-- [ ] `config/brand.js`
+- [x] `config/brand.js`
 
 *localization*
 
-- [ ] `localization/index.js`
-- [ ] `localization/locales/en.js`
-- [ ] `localization/locales/hi.js`
+- [x] `localization/index.js`
+- [x] `localization/locales/en.js`
+- [x] `localization/locales/hi.js`
 
 *services*
 
-- [ ] `services/alerts/alertStore.js`
-- [ ] `services/network/ensureOnline.js`
+- [x] `services/alerts/alertStore.js`
+- [x] `services/network/ensureOnline.js`
 
 *utils*
 
-- [ ] `utils/date.js`
-- [ ] `utils/greeting.js`
+- [x] `utils/date.js`
+- [x] `utils/greeting.js`
 
 **Adapt (native module → web API, same exports)** (4)
 
 *config*
 
-- [ ] `config/env.js`
+- [x] `config/env.js`
 
 *services*
 
-- [ ] `services/network/network.js` — replace `@react-native-community/netinfo`
-- [ ] `services/storage/secureStorage.js` — replace `react-native-keychain`
+- [x] `services/network/network.js` — replace `@react-native-community/netinfo`
+- [x] `services/storage/secureStorage.js` — replace `react-native-keychain`
 
 *store*
 
-- [ ] `store/index.js` — replace `@react-native-async-storage/async-storage`
+- [x] `store/index.js` — replace `@react-native-async-storage/async-storage`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (1)
 
-- [ ] `screens/SplashScreen.jsx` → `pages/SplashPage.jsx`
+- [x] `screens/SplashScreen.jsx` → `pages/SplashPage.jsx`
 
 
-**Done when:** the app boots to a splash, then the public shell, hits a mock API through the real client, a logout in one tab logs out the other, lint + test + build pass in CI.
+**Done when:** the app boots to a splash, then the public shell, hits a mock API through the real client, a logout in one tab logs out the other, lint + test + build pass in CI. (Met locally: 232 tests pass, lint has 0 errors, build passes. Not done: a hosted CI pipeline file, since there is no repo or host yet;  runs the same three steps.)
+
+**W1 notes and deliberate differences**
+
+- **Copied ahead of schedule:** all 108 pure-JS files were copied in W1 (not only the ones listed above), because copying is free and it let the whole store boot. The per-phase lists still show them under their feature phase, ticked. Their *logic* is untouched; Prettier 3 reflowed 26 of them (formatting only, spot-checked).
+- **Unit tests:** all 25 mobile unit-test files were ported to  (212 tests, all pass). Changes:  is aliased to  in ; Jest-style  calls became ES imports;  checks  instead of the Keychain mock. New web tests: route guards, boot, storage, network, cross-tab logout.
+- **No :** the drawer state lives in , because on the web the hamburger is in the same layout (mobile needed a context to reach the Home header).
+- ** became ** and is rendered by , not by a route.
+- **Every route exists** in  and renders  until its phase lands (see the  shown on each placeholder).
+- **Token storage** is the temporary fallback described in plan.md section 3 (access token in memory, refresh token in ). Revisit before production (open question 2).
+- **Shared package vs copy:** decided **copy** for now (plan.md section 1).
+- **ESLint:** ,  and  are warnings, not errors, because three copied hooks (, , ) were written for looser mobile lint rules. Fix them when W7, W10 and W11 port those features.
+- **Bundle:** the main chunk is about 520 kB (170 kB gzip) because every slice and the icon set load up front. Route-level code splitting is W13.
+- **Prettier** uses the mobile config (no semicolon change, single quotes, trailing commas) plus the Tailwind class-sorting plugin, so copied and new code look the same.
 
 ---
 
@@ -152,7 +165,7 @@ Mobile files for this phase:
 
 **Copy as is (pure JS)** (1)
 
-- [ ] `hooks/usePaywall.js`
+- [x] `hooks/usePaywall.js`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (13)
 
@@ -199,38 +212,38 @@ Mobile files for this phase:
 
 *auth*
 
-- [ ] `features/auth/hooks/useCountdown.js`
-- [ ] `features/auth/services/authService.js`
-- [ ] `features/auth/store/authSlice.js`
-- [ ] `features/auth/store/sessionThunks.js`
-- [ ] `features/auth/utils/confirmLogout.js`
+- [x] `features/auth/hooks/useCountdown.js`
+- [x] `features/auth/services/authService.js`
+- [x] `features/auth/store/authSlice.js`
+- [x] `features/auth/store/sessionThunks.js`
+- [x] `features/auth/utils/confirmLogout.js`
 
 *exams*
 
-- [ ] `features/exams/hooks/useExamFilter.js`
-- [ ] `features/exams/services/examService.js`
-- [ ] `features/exams/services/mockExamContent.js`
-- [ ] `features/exams/store/examSlice.js`
-- [ ] `features/exams/utils/examContent.js`
+- [x] `features/exams/hooks/useExamFilter.js`
+- [x] `features/exams/services/examService.js`
+- [x] `features/exams/services/mockExamContent.js`
+- [x] `features/exams/store/examSlice.js`
+- [x] `features/exams/utils/examContent.js`
 
 *hooks*
 
-- [ ] `hooks/useExamLoader.js`
+- [x] `hooks/useExamLoader.js`
 
 *store*
 
-- [ ] `store/selectors/authSelectors.js`
-- [ ] `store/selectors/examSelectors.js`
-- [ ] `store/selectors/userSelectors.js`
+- [x] `store/selectors/authSelectors.js`
+- [x] `store/selectors/examSelectors.js`
+- [x] `store/selectors/userSelectors.js`
 
 *user*
 
-- [ ] `features/user/services/userService.js`
-- [ ] `features/user/store/userSlice.js`
+- [x] `features/user/services/userService.js`
+- [x] `features/user/store/userSlice.js`
 
 *validation*
 
-- [ ] `validation/authValidation.js`
+- [x] `validation/authValidation.js`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (9)
 
@@ -273,21 +286,21 @@ Mobile files for this phase:
 
 *material*
 
-- [ ] `features/material/hooks/useMaterial.js`
-- [ ] `features/material/services/materialService.js`
-- [ ] `features/material/store/materialSlice.js`
-- [ ] `features/material/utils/format.js`
+- [x] `features/material/hooks/useMaterial.js`
+- [x] `features/material/services/materialService.js`
+- [x] `features/material/store/materialSlice.js`
+- [x] `features/material/utils/format.js`
 
 *store*
 
-- [ ] `store/selectors/materialSelectors.js`
-- [ ] `store/selectors/syllabusSelectors.js`
+- [x] `store/selectors/materialSelectors.js`
+- [x] `store/selectors/syllabusSelectors.js`
 
 *syllabus*
 
-- [ ] `features/syllabus/hooks/useSyllabus.js`
-- [ ] `features/syllabus/services/syllabusService.js`
-- [ ] `features/syllabus/store/syllabusSlice.js`
+- [x] `features/syllabus/hooks/useSyllabus.js`
+- [x] `features/syllabus/services/syllabusService.js`
+- [x] `features/syllabus/store/syllabusSlice.js`
 
 **Adapt (native module → web API, same exports)** (1)
 
@@ -348,14 +361,14 @@ Mobile files for this phase:
 
 *practice*
 
-- [ ] `features/practice/services/practiceService.js`
-- [ ] `features/practice/store/practiceSlice.js`
-- [ ] `features/practice/utils/scoring.js`
+- [x] `features/practice/services/practiceService.js`
+- [x] `features/practice/store/practiceSlice.js`
+- [x] `features/practice/utils/scoring.js`
 
 *store*
 
-- [ ] `store/selectors/attemptStatsSelectors.js`
-- [ ] `store/selectors/practiceSelectors.js`
+- [x] `store/selectors/attemptStatsSelectors.js`
+- [x] `store/selectors/practiceSelectors.js`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (6)
 
@@ -394,31 +407,31 @@ Mobile files for this phase:
 
 *activity*
 
-- [ ] `features/activity/hooks/useContinueLearning.js`
-- [ ] `features/activity/services/activityService.js`
-- [ ] `features/activity/store/activitySlice.js`
+- [x] `features/activity/hooks/useContinueLearning.js`
+- [x] `features/activity/services/activityService.js`
+- [x] `features/activity/store/activitySlice.js`
 
 *home*
 
-- [ ] `features/home/hooks/useHome.js`
-- [ ] `features/home/services/homeService.js`
-- [ ] `features/home/store/homeSlice.js`
+- [x] `features/home/hooks/useHome.js`
+- [x] `features/home/services/homeService.js`
+- [x] `features/home/store/homeSlice.js`
 
 *hooks*
 
-- [ ] `hooks/useReconnectSync.js`
+- [x] `hooks/useReconnectSync.js`
 
 *store*
 
-- [ ] `store/selectors/activitySelectors.js`
-- [ ] `store/selectors/homeSelectors.js`
-- [ ] `store/selectors/studySelectors.js`
+- [x] `store/selectors/activitySelectors.js`
+- [x] `store/selectors/homeSelectors.js`
+- [x] `store/selectors/studySelectors.js`
 
 *study*
 
-- [ ] `features/study/services/studyService.js`
-- [ ] `features/study/store/studySlice.js`
-- [ ] `features/study/utils/sessionClock.js`
+- [x] `features/study/services/studyService.js`
+- [x] `features/study/store/studySlice.js`
+- [x] `features/study/utils/sessionClock.js`
 
 **Adapt (native module → web API, same exports)** (1)
 
@@ -465,17 +478,17 @@ Mobile files for this phase:
 
 *aiTutor*
 
-- [ ] `features/aiTutor/hooks/usePhotoDoubt.js`
-- [ ] `features/aiTutor/hooks/useVoiceInput.js`
-- [ ] `features/aiTutor/services/aiTutorService.js`
-- [ ] `features/aiTutor/services/doubtService.js`
-- [ ] `features/aiTutor/store/aiTutorSlice.js`
-- [ ] `features/aiTutor/utils/questionPrompt.js`
-- [ ] `features/aiTutor/utils/quickPrompts.js`
+- [x] `features/aiTutor/hooks/usePhotoDoubt.js`
+- [x] `features/aiTutor/hooks/useVoiceInput.js`
+- [x] `features/aiTutor/services/aiTutorService.js`
+- [x] `features/aiTutor/services/doubtService.js`
+- [x] `features/aiTutor/store/aiTutorSlice.js`
+- [x] `features/aiTutor/utils/questionPrompt.js`
+- [x] `features/aiTutor/utils/quickPrompts.js`
 
 *store*
 
-- [ ] `store/selectors/aiTutorSelectors.js`
+- [x] `store/selectors/aiTutorSelectors.js`
 
 **Adapt (native module → web API, same exports)** (3)
 
@@ -526,27 +539,27 @@ Mobile files for this phase:
 
 *mock*
 
-- [ ] `features/mock/services/mockService.js`
-- [ ] `features/mock/store/mockSlice.js`
-- [ ] `features/mock/utils/mockTests.js`
-- [ ] `features/mock/utils/questionGenerator.js`
-- [ ] `features/mock/utils/scoring.js`
+- [x] `features/mock/services/mockService.js`
+- [x] `features/mock/store/mockSlice.js`
+- [x] `features/mock/utils/mockTests.js`
+- [x] `features/mock/utils/questionGenerator.js`
+- [x] `features/mock/utils/scoring.js`
 
 *pyq*
 
-- [ ] `features/pyq/hooks/usePyqPapers.js`
-- [ ] `features/pyq/services/pyqService.js`
-- [ ] `features/pyq/store/pyqSlice.js`
-- [ ] `features/pyq/utils/pyq.js`
+- [x] `features/pyq/hooks/usePyqPapers.js`
+- [x] `features/pyq/services/pyqService.js`
+- [x] `features/pyq/store/pyqSlice.js`
+- [x] `features/pyq/utils/pyq.js`
 
 *store*
 
-- [ ] `store/selectors/mockSelectors.js`
-- [ ] `store/selectors/pyqSelectors.js`
+- [x] `store/selectors/mockSelectors.js`
+- [x] `store/selectors/pyqSelectors.js`
 
 *tests*
 
-- [ ] `features/tests/utils/catalog.js`
+- [x] `features/tests/utils/catalog.js`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (15)
 
@@ -598,13 +611,13 @@ Mobile files for this phase:
 
 *membership*
 
-- [ ] `features/membership/services/membershipService.js`
-- [ ] `features/membership/store/membershipSlice.js`
-- [ ] `features/membership/utils/entitlements.js`
+- [x] `features/membership/services/membershipService.js`
+- [x] `features/membership/store/membershipSlice.js`
+- [x] `features/membership/utils/entitlements.js`
 
 *store*
 
-- [ ] `store/selectors/membershipSelectors.js`
+- [x] `store/selectors/membershipSelectors.js`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (8)
 
@@ -640,18 +653,18 @@ Mobile files for this phase:
 
 *analytics*
 
-- [ ] `features/analytics/hooks.js`
-- [ ] `features/analytics/utils/performance.js`
+- [x] `features/analytics/hooks.js`
+- [x] `features/analytics/utils/performance.js`
 
 *history*
 
-- [ ] `features/history/utils/history.js`
+- [x] `features/history/utils/history.js`
 
 *plan*
 
-- [ ] `features/plan/hooks.js`
-- [ ] `features/plan/store/planSlice.js`
-- [ ] `features/plan/utils/planBuilder.js`
+- [x] `features/plan/hooks.js`
+- [x] `features/plan/store/planSlice.js`
+- [x] `features/plan/utils/planBuilder.js`
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (7)
 
@@ -695,17 +708,17 @@ Mobile files for this phase:
 
 *omr*
 
-- [ ] `features/omr/hooks/useOmrResult.js`
-- [ ] `features/omr/hooks/useOmrSheet.js`
-- [ ] `features/omr/services/omrResultService.js`
-- [ ] `features/omr/services/omrService.js`
-- [ ] `features/omr/store/omrSlice.js`
-- [ ] `features/omr/utils/omrResult.js`
-- [ ] `features/omr/utils/omrSheet.js`
+- [x] `features/omr/hooks/useOmrResult.js`
+- [x] `features/omr/hooks/useOmrSheet.js`
+- [x] `features/omr/services/omrResultService.js`
+- [x] `features/omr/services/omrService.js`
+- [x] `features/omr/store/omrSlice.js`
+- [x] `features/omr/utils/omrResult.js`
+- [x] `features/omr/utils/omrSheet.js`
 
 *store*
 
-- [ ] `store/selectors/omrSelectors.js`
+- [x] `store/selectors/omrSelectors.js`
 
 **Adapt (native module → web API, same exports)** (1)
 
@@ -746,36 +759,36 @@ Mobile files for this phase:
 
 *legal*
 
-- [ ] `features/legal/content/privacy.js`
-- [ ] `features/legal/content/terms.js`
+- [x] `features/legal/content/privacy.js`
+- [x] `features/legal/content/terms.js`
 
 *notifications*
 
-- [ ] `features/notifications/services/notificationService.js`
-- [ ] `features/notifications/store/notificationsSlice.js`
-- [ ] `features/notifications/utils/notifications.js`
+- [x] `features/notifications/services/notificationService.js`
+- [x] `features/notifications/store/notificationsSlice.js`
+- [x] `features/notifications/utils/notifications.js`
 
 *profile*
 
-- [ ] `features/profile/hooks/useAvatarChange.js`
-- [ ] `features/profile/hooks/useProfileStats.js`
-- [ ] `features/profile/utils/profile.js`
+- [x] `features/profile/hooks/useAvatarChange.js`
+- [x] `features/profile/hooks/useProfileStats.js`
+- [x] `features/profile/utils/profile.js`
 
 *settings*
 
-- [ ] `features/settings/hooks/useReminderSettings.js`
-- [ ] `features/settings/store/settingsSlice.js`
-- [ ] `features/settings/utils/reminders.js`
+- [x] `features/settings/hooks/useReminderSettings.js`
+- [x] `features/settings/store/settingsSlice.js`
+- [x] `features/settings/utils/reminders.js`
 
 *store*
 
-- [ ] `store/selectors/notificationSelectors.js`
-- [ ] `store/selectors/settingsSelectors.js`
+- [x] `store/selectors/notificationSelectors.js`
+- [x] `store/selectors/settingsSelectors.js`
 
 *support*
 
-- [ ] `features/support/content/faqs.js`
-- [ ] `features/support/utils/support.js`
+- [x] `features/support/content/faqs.js`
+- [x] `features/support/utils/support.js`
 
 **Adapt (native module → web API, same exports)** (3)
 

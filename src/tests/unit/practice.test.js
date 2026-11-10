@@ -160,7 +160,10 @@ describe('practice test', () => {
 describe('AI-generated practice source', () => {
   it('starts an AI session whose questions are flagged, and reports one', async () => {
     const store = configureStore({
-      reducer: { practice: slice.default, user: (s = { entitlements: null }) => s },
+      reducer: {
+        practice: slice.default,
+        user: (s = { entitlements: null }) => s,
+      },
     });
     await store.dispatch(
       slice.startPractice({
@@ -179,7 +182,9 @@ describe('AI-generated practice source', () => {
     expect(session.questions.every(q => q.ai)).toBe(true);
 
     const id = session.questions[0].id;
-    await store.dispatch(slice.reportQuestion({ questionId: id, reason: 'wrong-question' }));
+    await store.dispatch(
+      slice.reportQuestion({ questionId: id, reason: 'wrong-question' }),
+    );
     expect(store.getState().practice.reported[id]).toBe(true);
   });
 });
@@ -187,7 +192,10 @@ describe('AI-generated practice source', () => {
 describe('saved results for History', () => {
   it('keeps the review of finished tests and reopens one by id', async () => {
     const store = configureStore({
-      reducer: { practice: slice.default, user: (s = { entitlements: null }) => s },
+      reducer: {
+        practice: slice.default,
+        user: (s = { entitlements: null }) => s,
+      },
     });
     const finish = async () => {
       await store.dispatch(

@@ -28,7 +28,9 @@ const genericReply = topicName =>
 const QUICK_REPLIES = {
   simpler: (lastAiText, topicName) =>
     `Aur aasan tarike se${topicName ? ` (${topicName})` : ''}: ${
-      lastAiText ? lastAiText.split('\n')[0].replace(/\*\*/g, '') : 'is topic ka core idea'
+      lastAiText
+        ? lastAiText.split('\n')[0].replace(/\*\*/g, '')
+        : 'is topic ka core idea'
     } — ek baar mein ek hi step par dhyaan dijiye.`,
   questions: () =>
     'Is topic se sawal banana jald hi yahan se ho sakega. Abhi ke liye topic ke "Practice Test" tab se maujooda sawal try kijiye.',

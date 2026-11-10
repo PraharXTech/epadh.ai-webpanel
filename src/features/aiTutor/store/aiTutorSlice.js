@@ -128,7 +128,9 @@ const aiTutorSlice = createSlice({
         const { id, examId, topicId, topicName } = action.payload;
         const existing = state.order
           .map(cid => state.conversations[cid])
-          .find(c => c.messages.length === 0 && c.topicId === (topicId ?? null));
+          .find(
+            c => c.messages.length === 0 && c.topicId === (topicId ?? null),
+          );
         if (existing) {
           state.activeId = existing.id;
           return;

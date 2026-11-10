@@ -7,14 +7,16 @@ import { SIDEBAR_SECTIONS } from './sidebarItems';
 // screens. `onNavigate` lets the drawer close itself after a link is followed.
 export default function Sidebar({ onNavigate }) {
   return (
-    <nav aria-label="Main" className="flex h-full flex-col overflow-y-auto bg-white p-4">
+    <nav
+      aria-label="Main"
+      className="flex h-full flex-col overflow-y-auto bg-white p-4">
       <div className="mb-6 px-2">
         <BrandLogo size={32} />
       </div>
       {SIDEBAR_SECTIONS.map(section => (
         <div key={section.id} className="mb-4">
           {section.title ? (
-            <p className="mb-1 px-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+            <p className="mb-1 px-2 text-xs font-semibold tracking-wide text-slate-400 uppercase">
               {section.title}
             </p>
           ) : null}
@@ -31,11 +33,9 @@ export default function Sidebar({ onNavigate }) {
                         ? 'bg-blue-50 text-blue-700'
                         : 'text-slate-700 hover:bg-slate-50'
                     }`
-                  }
-                >
+                  }>
                   <span
-                    className={`flex h-8 w-8 items-center justify-center rounded-lg ${item.bg}`}
-                  >
+                    className={`flex h-8 w-8 items-center justify-center rounded-lg ${item.bg}`}>
                     <AppIcon name={item.icon} size={18} color={item.color} />
                   </span>
                   {item.label}

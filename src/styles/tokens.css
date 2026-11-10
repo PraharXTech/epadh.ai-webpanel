@@ -8,7 +8,8 @@
   --color-brand-700: #1d4ed8;
 
   /* Noto Sans Devanagari is loaded in index.html so Hindi text renders everywhere. */
-  --font-sans: 'Inter', 'Noto Sans Devanagari', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:
+    'Inter', 'Noto Sans Devanagari', system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer base {

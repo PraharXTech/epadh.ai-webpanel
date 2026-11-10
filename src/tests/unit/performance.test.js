@@ -7,7 +7,13 @@ import {
 const NOW = new Date('2026-10-01T12:00:00').getTime();
 const DAY = 86400000;
 
-const practice = (topicId, correct, wrong, daysAgo = 0, subjectName = 'Quant') => ({
+const practice = (
+  topicId,
+  correct,
+  wrong,
+  daysAgo = 0,
+  subjectName = 'Quant',
+) => ({
   id: `${topicId}-${daysAgo}-${correct}`,
   topicId,
   topicName: topicId.toUpperCase(),
@@ -44,9 +50,15 @@ describe('buildPerformance', () => {
 
   it('only counts attempts inside the range', () => {
     const history = [practice('a', 5, 0, 1), practice('a', 0, 5, 20)];
-    expect(buildPerformance({ now: NOW, practice: history, days: 7 }).tests).toBe(1);
-    expect(buildPerformance({ now: NOW, practice: history, days: 30 }).tests).toBe(2);
-    expect(buildPerformance({ now: NOW, practice: history, days: null }).tests).toBe(2);
+    expect(
+      buildPerformance({ now: NOW, practice: history, days: 7 }).tests,
+    ).toBe(1);
+    expect(
+      buildPerformance({ now: NOW, practice: history, days: 30 }).tests,
+    ).toBe(2);
+    expect(
+      buildPerformance({ now: NOW, practice: history, days: null }).tests,
+    ).toBe(2);
   });
 
   it('ranks weak and strong topics only once there is enough data', () => {

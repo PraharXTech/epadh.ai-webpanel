@@ -26,20 +26,41 @@ const m = (id, daysAgo, extra = {}) => ({
 });
 
 describe('history rows', () => {
-  const practice = [p('a', 'Quant', 20), p('b', 'Reasoning', 1), p('c', 'Quant', 3)];
+  const practice = [
+    p('a', 'Quant', 20),
+    p('b', 'Reasoning', 1),
+    p('c', 'Quant', 3),
+  ];
 
   it('lists a tab newest first', () => {
-    const rows = buildHistoryRows({ tab: 'practice', practice, mock: [], now: NOW });
+    const rows = buildHistoryRows({
+      tab: 'practice',
+      practice,
+      mock: [],
+      now: NOW,
+    });
     expect(rows.map(r => r.id)).toEqual(['b', 'c', 'a']);
     expect(rows[0].scoreText).toBe('7/10');
   });
 
   it('filters by date and by subject', () => {
     expect(
-      buildHistoryRows({ tab: 'practice', practice, mock: [], days: 7, now: NOW }).map(r => r.id),
+      buildHistoryRows({
+        tab: 'practice',
+        practice,
+        mock: [],
+        days: 7,
+        now: NOW,
+      }).map(r => r.id),
     ).toEqual(['b', 'c']);
     expect(
-      buildHistoryRows({ tab: 'practice', practice, mock: [], subject: 'Quant', now: NOW }).map(r => r.id),
+      buildHistoryRows({
+        tab: 'practice',
+        practice,
+        mock: [],
+        subject: 'Quant',
+        now: NOW,
+      }).map(r => r.id),
     ).toEqual(['c', 'a']);
     expect(practiceSubjects(practice)).toEqual(['Quant', 'Reasoning']);
   });
@@ -55,11 +76,17 @@ describe('history rows', () => {
       ],
       now: NOW,
     });
-    expect(rows.map(r => r.subtitle)).toEqual(['Rank 12 of 300', 'Mock test', 'Rank on its way']);
+    expect(rows.map(r => r.subtitle)).toEqual([
+      'Rank 12 of 300',
+      'Mock test',
+      'Rank on its way',
+    ]);
     expect(rows[0].scoreText).toBe('40/50');
   });
 
   it('has no OMR rows yet', () => {
-    expect(buildHistoryRows({ tab: 'omr', practice, mock: [], now: NOW })).toEqual([]);
+    expect(
+      buildHistoryRows({ tab: 'omr', practice, mock: [], now: NOW }),
+    ).toEqual([]);
   });
 });

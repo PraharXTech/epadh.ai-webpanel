@@ -11,8 +11,7 @@ export default function NotFoundPage() {
       </p>
       <Link
         to={PATHS.home}
-        className="mt-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white"
-      >
+        className="mt-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white">
         Go to Home
       </Link>
     </div>

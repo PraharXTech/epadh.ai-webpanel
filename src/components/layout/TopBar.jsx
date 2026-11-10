@@ -15,8 +15,7 @@ export default function TopBar({ onMenu }) {
         type="button"
         onClick={onMenu}
         aria-label="Open menu"
-        className="rounded-lg p-2 hover:bg-slate-100 lg:hidden"
-      >
+        className="rounded-lg p-2 hover:bg-slate-100 lg:hidden">
         <AppIcon name="menu" size={22} />
       </button>
       <div className="lg:hidden">
@@ -26,15 +25,13 @@ export default function TopBar({ onMenu }) {
       <Link
         to={PATHS.notifications}
         aria-label="Notifications"
-        className="rounded-lg p-2 hover:bg-slate-100"
-      >
+        className="rounded-lg p-2 hover:bg-slate-100">
         <AppIcon name="bell" size={20} />
       </Link>
       <Link
         to={PATHS.profile}
         aria-label="Profile"
-        className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white"
-      >
+        className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
         {initial}
       </Link>
     </header>

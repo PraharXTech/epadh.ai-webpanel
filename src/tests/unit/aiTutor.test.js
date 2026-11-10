@@ -34,7 +34,11 @@ describe('ai tutor chat', () => {
 
   it('starts a conversation scoped to a topic', () => {
     store.dispatch(
-      startConversation({ examId: 'pet', topicId: 't-percentage', topicName: 'Percentage' }),
+      startConversation({
+        examId: 'pet',
+        topicId: 't-percentage',
+        topicName: 'Percentage',
+      }),
     );
     const conversation = selectActiveConversation(store.getState());
     expect(conversation.topicId).toBe('t-percentage');
@@ -43,27 +47,39 @@ describe('ai tutor chat', () => {
   });
 
   it('reuses the empty conversation for the same topic instead of creating a new one', () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
     const first = selectActiveConversation(store.getState()).id;
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
     const second = selectActiveConversation(store.getState()).id;
     expect(second).toBe(first);
     expect(selectConversationList(store.getState())).toHaveLength(1);
   });
 
   it('starts a fresh conversation when the topic differs', () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
     const first = selectActiveConversation(store.getState()).id;
-    store.dispatch(startConversation({ topicId: 't-ratio', topicName: 'Ratio' }));
+    store.dispatch(
+      startConversation({ topicId: 't-ratio', topicName: 'Ratio' }),
+    );
     const second = selectActiveConversation(store.getState()).id;
     expect(second).not.toBe(first);
     expect(selectConversationList(store.getState())).toHaveLength(2);
   });
 
   it('adds the user bubble immediately and the AI reply once it resolves', async () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
 
-    const promise = store.dispatch(sendChatMessage({ text: 'HCF kaise nikale?' }));
+    const promise = store.dispatch(
+      sendChatMessage({ text: 'HCF kaise nikale?' }),
+    );
     // Still pending: the user's own message is already visible.
     let conversation = selectActiveConversation(store.getState());
     expect(conversation.messages).toHaveLength(1);
@@ -84,7 +100,9 @@ describe('ai tutor chat', () => {
   });
 
   it('gives the quick-prompt canned reply and mentions the topic', async () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
     await send('मुख्य परीक्षा बिंदु बताओ', { promptId: 'keypoints' });
 
     const conversation = selectActiveConversation(store.getState());
@@ -93,8 +111,10 @@ describe('ai tutor chat', () => {
     expect(reply).toContain('•');
   });
 
-  it('counts one question against today\'s quota per AI reply', async () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+  it("counts one question against today's quota per AI reply", async () => {
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
     expect(selectAiUsedToday(store.getState())).toBe(0);
     expect(selectAiDailyLimit(store.getState())).toBe(10);
 
@@ -108,7 +128,9 @@ describe('ai tutor chat', () => {
   });
 
   it('switches the active conversation and rates a message', async () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
     const percentageId = selectActiveConversation(store.getState()).id;
     await send('Ek sawal');
 
@@ -122,9 +144,9 @@ describe('ai tutor chat', () => {
 
     const aiMessage = active.messages[1];
     store.dispatch(rateMessage({ messageId: aiMessage.id, rating: 'up' }));
-    expect(
-      selectActiveConversation(store.getState()).messages[1].rating,
-    ).toBe('up');
+    expect(selectActiveConversation(store.getState()).messages[1].rating).toBe(
+      'up',
+    );
 
     // Tapping the same rating again clears it.
     store.dispatch(rateMessage({ messageId: aiMessage.id, rating: 'up' }));
@@ -134,10 +156,15 @@ describe('ai tutor chat', () => {
   });
 
   it('sends a photo doubt as a user bubble with an image and counts it against quota', async () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
 
     const promise = store.dispatch(
-      sendPhotoMessage({ imageUri: 'file:///doubt.jpg', note: 'Yeh wala sawal' }),
+      sendPhotoMessage({
+        imageUri: 'file:///doubt.jpg',
+        note: 'Yeh wala sawal',
+      }),
     );
     let conversation = selectActiveConversation(store.getState());
     expect(conversation.messages[0]).toMatchObject({
@@ -168,7 +195,9 @@ describe('ai tutor chat', () => {
   });
 
   it('clears every conversation on logout', async () => {
-    store.dispatch(startConversation({ topicId: 't-percentage', topicName: 'Percentage' }));
+    store.dispatch(
+      startConversation({ topicId: 't-percentage', topicName: 'Percentage' }),
+    );
     await send('Kuch bhi');
     expect(selectConversationList(store.getState())).toHaveLength(1);
 
@@ -189,7 +218,9 @@ describe('ai tutor retry', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('re-asks the last message after a failure without adding a second bubble', async () => {
-    jest.spyOn(service, 'sendMessage').mockRejectedValueOnce(new Error('network'));
+    jest
+      .spyOn(service, 'sendMessage')
+      .mockRejectedValueOnce(new Error('network'));
     await send('What is HCF?');
     expect(selectSendStatus(store.getState())).toBe('failed');
     expect(selectActiveConversation(store.getState()).messages).toHaveLength(1);

@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { render } from '@testing-library/react'
-import { Provider } from 'react-redux'
-import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { configureStore } from '@reduxjs/toolkit';
+import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 
 // Web port of mobile test-utils/render.jsx: renders a page inside a Redux store and a
 // memory router, so tests can set the URL and read the resulting location.
@@ -18,13 +18,17 @@ export function renderWithProviders(
     reducer,
     preloadedState,
     middleware: getDefault => getDefault({ serializableCheck: false }),
-  })
+  });
   const router = createMemoryRouter([{ path, element: ui }], {
     initialEntries: [route],
-  })
-  return { store, router, ...render(
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>,
-  ) }
+  });
+  return {
+    store,
+    router,
+    ...render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>,
+    ),
+  };
 }

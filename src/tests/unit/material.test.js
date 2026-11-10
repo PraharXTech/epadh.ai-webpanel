@@ -97,7 +97,8 @@ describe('study material', () => {
     store.dispatch(setProgress({ id: 'm2', percent: 250 }));
     expect(find('m2').progress).toBe(100);
     expect(
-      store.getState().material.byExam.pet.items.find(i => i.id === 'm2').progress,
+      store.getState().material.byExam.pet.items.find(i => i.id === 'm2')
+        .progress,
     ).toBe(75);
   });
 

@@ -15,8 +15,7 @@ export default {
   'settings.studyReminderHint': 'A nudge at {time} every day',
   'settings.reminderTime': 'Reminder time',
   'settings.streakReminder': 'Streak reminder',
-  'settings.streakReminderHint':
-    'At 8 pm, only if you have not studied today',
+  'settings.streakReminderHint': 'At 8 pm, only if you have not studied today',
   'settings.permissionTitle': 'Notifications are off',
   'settings.permissionBody':
     'Allow notifications for epadh.ai in your phone settings to get reminders.',

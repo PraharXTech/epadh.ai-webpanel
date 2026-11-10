@@ -42,8 +42,7 @@ export default function AlertHost() {
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="alert-title"
-        className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl"
-      >
+        className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl">
         <h2 id="alert-title" className="text-lg font-bold text-slate-900">
           {dialog.title}
         </h2>
@@ -63,8 +62,7 @@ export default function AlertHost() {
                   : button.style === 'cancel'
                     ? 'bg-slate-100 text-slate-700'
                     : 'bg-blue-600 text-white'
-              }`}
-            >
+              }`}>
               {button.text}
             </button>
           ))}

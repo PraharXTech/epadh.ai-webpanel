@@ -13,4 +13,3 @@ describe('auth validation', () => {
     expect(validateOtp('12345a')).not.toBeNull();
   });
 });
-

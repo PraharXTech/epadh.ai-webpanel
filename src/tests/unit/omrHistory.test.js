@@ -24,7 +24,10 @@ describe('OMR history slice', () => {
     state = reducer(state, recordScan(scan('b')));
     expect(state.history.map(h => h.scanId)).toEqual(['b', 'a']);
 
-    state = reducer(state, recordScan(scan('a', { rank: 3, participants: 130, score: 999 })));
+    state = reducer(
+      state,
+      recordScan(scan('a', { rank: 3, participants: 130, score: 999 })),
+    );
     expect(state.history).toHaveLength(2);
     // only the rank moves; the stored score stays
     expect(state.history.find(h => h.scanId === 'a')).toMatchObject({
@@ -49,13 +52,21 @@ describe('OMR history slice', () => {
 
 describe('OMR history helpers', () => {
   it('summarizes a result down to what the list needs', () => {
-    const summary = summarizeResult({ ...scan('x'), answers: [1, 2, 3], sections: [] });
+    const summary = summarizeResult({
+      ...scan('x'),
+      answers: [1, 2, 3],
+      sections: [],
+    });
     expect(summary).not.toHaveProperty('answers');
     expect(summary).toMatchObject({ scanId: 'x', score: 60, rank: 10 });
   });
 
   it('computes totals, treating a negative score as 0%', () => {
-    expect(historyStats([])).toEqual({ scans: 0, bestPercent: 0, avgAccuracy: 0 });
+    expect(historyStats([])).toEqual({
+      scans: 0,
+      bestPercent: 0,
+      avgAccuracy: 0,
+    });
     expect(
       historyStats([
         scan('a', { score: 150, accuracy: 80 }),

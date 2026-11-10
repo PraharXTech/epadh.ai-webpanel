@@ -29,7 +29,10 @@ export default function useVoiceInput() {
         onFinal: setTranscript,
         onError: message => {
           setListening(false);
-          showAlert('Voice assistant', message, null, { tone: 'warning', icon: 'mic' });
+          showAlert('Voice assistant', message, null, {
+            tone: 'warning',
+            icon: 'mic',
+          });
         },
       });
     } catch {

@@ -46,7 +46,8 @@ export default function useOmrResult(scanId) {
       setState({
         status: 'ready',
         result: result.value,
-        leaderboard: leaderboard.status === 'fulfilled' ? leaderboard.value : null,
+        leaderboard:
+          leaderboard.status === 'fulfilled' ? leaderboard.value : null,
         leaderboardFailed: leaderboard.status === 'rejected',
       });
     });

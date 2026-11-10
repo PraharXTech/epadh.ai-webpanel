@@ -79,7 +79,8 @@ export const buildMockResult = (session, test, timeSpentSec) => {
   const wrong = attempted - correct;
   const unattempted = total - attempted;
   const negativeApplied = Math.round(wrong * negativePerWrong * 100) / 100;
-  const score = Math.round((correct * perQuestion - negativeApplied) * 100) / 100;
+  const score =
+    Math.round((correct * perQuestion - negativeApplied) * 100) / 100;
 
   return {
     id: session.id,

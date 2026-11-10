@@ -54,7 +54,9 @@ export const groupByDay = (items, now = Date.now()) => {
     .sort((a, b) => b.createdAt - a.createdAt)
     .forEach(n => {
       const key = dayKey(new Date(n.createdAt));
-      groups[key === today ? 'Today' : key === yesterday ? 'Yesterday' : 'Earlier'].push(n);
+      groups[
+        key === today ? 'Today' : key === yesterday ? 'Yesterday' : 'Earlier'
+      ].push(n);
     });
   return Object.entries(groups)
     .filter(([, data]) => data.length > 0)

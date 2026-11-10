@@ -6,8 +6,7 @@ export default function BrandLogo({ size = 40 }) {
       <AppIcon name="graduation-cap" color="#2563eb" size={size} />
       <span
         className="ml-2 font-extrabold text-slate-900"
-        style={{ fontSize: size * 0.6 }}
-      >
+        style={{ fontSize: size * 0.6 }}>
         epadh<span className="text-blue-600">.ai</span>
       </span>
     </span>

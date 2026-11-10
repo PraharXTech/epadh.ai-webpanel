@@ -1,9 +1,6 @@
 import { store } from '@/store';
 import { logout } from '@/features/auth/store/authSlice';
-import reducer, {
-  chooseExam,
-  fetchMe,
-} from '@/features/user/store/userSlice';
+import reducer, { chooseExam, fetchMe } from '@/features/user/store/userSlice';
 import {
   selectSelectedExamId,
   selectSelectedExamIds,
@@ -73,7 +70,9 @@ describe('choosing several exams', () => {
         { id: 'chsl', name: 'SSC CHSL' },
       ],
     });
-    expect(selectSelectedExamLabel(store.getState())).toBe('UPSSSC PET, SSC GD');
+    expect(selectSelectedExamLabel(store.getState())).toBe(
+      'UPSSSC PET, SSC GD',
+    );
   });
 });
 

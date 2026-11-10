@@ -17,7 +17,11 @@ export default function AppLayout() {
       </aside>
 
       {drawerOpen ? (
-        <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+        <div
+          className="fixed inset-0 z-40 lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu">
           <button
             type="button"
             aria-label="Close menu"
