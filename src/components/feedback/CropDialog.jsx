@@ -22,10 +22,20 @@ export default function CropDialog({
   const [zoom, setZoom] = useState(1);
   const [area, setArea] = useState(null);
 
+  // Read the file into a data: URL for the cropper. (An object URL would need revoking, and
+  // React's dev double-mount would revoke it while the dialog is still showing.)
   useEffect(() => {
-    const objectUrl = URL.createObjectURL(file);
-    setUrl(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
+    let cancelled = false;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (!cancelled) {
+        setUrl(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+    return () => {
+      cancelled = true;
+    };
   }, [file]);
 
   const onCropComplete = useCallback((_, pixels) => setArea(pixels), []);
@@ -33,7 +43,9 @@ export default function CropDialog({
   return (
     <Modal open title={title} placement="bottom" onClose={onCancel}>
       <div className="p-4">
-        <h3 aria-hidden="true" className="mb-3 text-lg font-bold text-slate-900">
+        <h3
+          aria-hidden="true"
+          className="mb-3 text-lg font-bold text-slate-900">
           {title}
         </h3>
         <div className="relative h-72 overflow-hidden rounded-2xl bg-slate-900 sm:h-80">

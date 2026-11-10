@@ -13,7 +13,12 @@ export const renderToBlob = async (
   bitmap,
   { crop, maxSize = 1600, quality = 0.8, mime = 'image/jpeg' } = {},
 ) => {
-  const source = crop ?? { x: 0, y: 0, width: bitmap.width, height: bitmap.height };
+  const source = crop ?? {
+    x: 0,
+    y: 0,
+    width: bitmap.width,
+    height: bitmap.height,
+  };
   const scale = Math.min(1, maxSize / Math.max(source.width, source.height));
   const width = Math.max(1, Math.round(source.width * scale));
   const height = Math.max(1, Math.round(source.height * scale));

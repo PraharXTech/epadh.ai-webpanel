@@ -22,7 +22,8 @@ export const analyzeDoubtPhoto = async ({
     // WEB CHANGE: a browser FormData takes a Blob, not the React Native { uri, name, type }.
     // The full-size photo is remembered in memory; after a reload only the small thumbnail the
     // message saved is left, which is what gets sent then.
-    const image = recallImage(imageUri) ?? (await (await fetch(imageUri)).blob());
+    const image =
+      recallImage(imageUri) ?? (await (await fetch(imageUri)).blob());
     const form = new FormData();
     form.append('image', image, 'doubt.jpg');
     if (note) {

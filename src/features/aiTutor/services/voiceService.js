@@ -16,7 +16,8 @@ const Recognition =
 export const isVoiceSupported = () => Boolean(Recognition);
 
 const ERROR_MESSAGES = {
-  'no-speech': "Kuch sunayi nahi diya. Please try again and speak a little louder.",
+  'no-speech':
+    'Kuch sunayi nahi diya. Please try again and speak a little louder.',
   'audio-capture': 'No microphone was found. Please connect one and try again.',
   'not-allowed':
     'epadh.ai needs microphone permission to hear your question. Allow it from the lock icon in the address bar.',

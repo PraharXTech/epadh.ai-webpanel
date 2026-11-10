@@ -3,6 +3,7 @@ import { Navigate, useBlocker, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import useGoBack from '@/hooks/useGoBack';
 import AppIcon from '@/components/common/AppIcon';
+import AskAiQuestionButton from '@/features/aiTutor/components/AskAiQuestionButton';
 import { recordActivity } from '@/features/activity/store/activitySlice';
 import BottomSheet from '@/features/material/components/BottomSheet';
 import useStudySession from '@/features/study/hooks/useStudySession';
@@ -403,6 +404,13 @@ export default function PracticeSessionPage() {
                   </div>
                 ) : null}
               </div>
+              {revealed ? (
+                <AskAiQuestionButton
+                  item={{ ...question, chosen }}
+                  topicId={session.topicId}
+                  topicName={session.topicName}
+                />
+              ) : null}
               {revealed && question.ai ? (
                 <ReportQuestionButton questionId={question.id} />
               ) : null}

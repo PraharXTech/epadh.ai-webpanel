@@ -4,7 +4,8 @@
 //
 // Long text is read in sentence-sized pieces: Chrome silently stops a single utterance after
 // roughly 15 seconds, so one long answer would be cut off.
-const synth = typeof window === 'undefined' ? undefined : window.speechSynthesis;
+const synth =
+  typeof window === 'undefined' ? undefined : window.speechSynthesis;
 
 export const isTtsSupported = () => Boolean(synth);
 

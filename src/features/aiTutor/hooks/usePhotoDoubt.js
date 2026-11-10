@@ -45,7 +45,9 @@ export default function usePhotoDoubt() {
     if (!pending) {
       return;
     }
-    dispatch(sendPhotoMessage({ imageUri: pending.thumbUri ?? pending.uri, note }));
+    dispatch(
+      sendPhotoMessage({ imageUri: pending.thumbUri ?? pending.uri, note }),
+    );
     setPending(null);
   };
 

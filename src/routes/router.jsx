@@ -4,6 +4,7 @@ import ScreenLoader from '@/components/common/ScreenLoader';
 import FocusLayout from '@/layouts/FocusLayout';
 import AppLayout from '@/layouts/AppLayout';
 import PublicLayout from '@/layouts/PublicLayout';
+import AskAiChatPage from '@/features/aiTutor/pages/AskAiChatPage';
 import ExamSelectionPage from '@/features/exams/pages/ExamSelectionPage';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import OtpPage from '@/features/auth/pages/OtpPage';
@@ -127,10 +128,6 @@ export const router = createBrowserRouter([
                 element: ph('Previous year papers', 'PyqPapersScreen', 'W8'),
               },
               {
-                path: PATHS.ask,
-                element: ph('Ask epadh.ai', 'AskAiChatScreen', 'W7'),
-              },
-              {
                 path: PATHS.omr,
                 element: ph('OMR scanner', 'OmrScanScreen', 'W11'),
               },
@@ -214,6 +211,7 @@ export const router = createBrowserRouter([
           {
             element: <FocusLayout />,
             children: [
+              { path: PATHS.ask, element: <AskAiChatPage /> },
               {
                 path: PATHS.examSelect,
                 element: <ExamSelectionPage changing />,
