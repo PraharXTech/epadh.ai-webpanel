@@ -4,7 +4,6 @@ import ScreenLoader from '@/components/common/ScreenLoader';
 import FocusLayout from '@/layouts/FocusLayout';
 import AppLayout from '@/layouts/AppLayout';
 import PublicLayout from '@/layouts/PublicLayout';
-import AskAiChatPage from '@/features/aiTutor/pages/AskAiChatPage';
 import ExamSelectionPage from '@/features/exams/pages/ExamSelectionPage';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import OtpPage from '@/features/auth/pages/OtpPage';
@@ -211,7 +210,15 @@ export const router = createBrowserRouter([
           {
             element: <FocusLayout />,
             children: [
-              { path: PATHS.ask, element: <AskAiChatPage /> },
+              {
+                path: PATHS.ask,
+                // The chat pulls in the markdown renderer: load it only when it is opened.
+                lazy: async () => ({
+                  Component: (
+                    await import('@/features/aiTutor/pages/AskAiChatPage')
+                  ).default,
+                }),
+              },
               {
                 path: PATHS.examSelect,
                 element: <ExamSelectionPage changing />,

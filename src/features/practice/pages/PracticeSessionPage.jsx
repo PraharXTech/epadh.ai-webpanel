@@ -453,7 +453,7 @@ export default function PracticeSessionPage() {
 
         <aside
           aria-label="Question palette"
-          className="hidden w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white p-4 lg:block">
+          className="hidden w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white p-4 lg:flex lg:flex-col">
           <QuestionPalette
             session={session}
             isPractice={isPractice}

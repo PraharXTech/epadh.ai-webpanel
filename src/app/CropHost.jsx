@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
-import CropDialog from '@/components/feedback/CropDialog';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { setCropListener } from '@/services/media/cropRequests';
+
+// The cropper library is only needed when a photo is being cropped: load it on first use.
+const CropDialog = lazy(() => import('@/components/feedback/CropDialog'));
 
 // Shows the crop dialog when the photo picker service asks for one (services/media/
 // cropRequests.js). Mount once, inside the providers.
@@ -20,13 +22,15 @@ export default function CropHost() {
     request.resolve(value);
   };
   return (
-    <CropDialog
-      file={request.file}
-      title={request.title}
-      aspect={request.aspect}
-      round={request.round}
-      onDone={area => finish({ crop: area })}
-      onCancel={() => finish(null)}
-    />
+    <Suspense fallback={null}>
+      <CropDialog
+        file={request.file}
+        title={request.title}
+        aspect={request.aspect}
+        round={request.round}
+        onDone={area => finish({ crop: area })}
+        onCancel={() => finish(null)}
+      />
+    </Suspense>
   );
 }

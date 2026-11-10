@@ -35,25 +35,29 @@ export default function QuestionPalette({
   onSubmit,
 }) {
   return (
-    <div>
-      <ul className="grid grid-cols-5 gap-2">
-        {session.questions.map((q, index) => {
-          const state = questionState(session, q, index);
-          return (
-            <li key={q.id}>
-              <button
-                type="button"
-                onClick={() => onJump(index)}
-                aria-label={`Question ${index + 1}, ${NAME[state]}`}
-                aria-current={index === session.current ? 'true' : undefined}
-                className={`flex h-11 w-full items-center justify-center rounded-lg text-sm font-bold ${STYLE[state]}`}>
-                {index + 1}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-      <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+    <div className="flex min-h-0 flex-1 flex-col">
+      {/* A full mock can have 100 questions: only the grid scrolls, so the legend and the
+          submit button stay in view (in the side panel, and in the phone sheet). */}
+      <div className="min-h-0 flex-1 overflow-y-auto max-h-[45vh] lg:max-h-none">
+        <ul className="grid grid-cols-5 gap-2">
+          {session.questions.map((q, index) => {
+            const state = questionState(session, q, index);
+            return (
+              <li key={q.id}>
+                <button
+                  type="button"
+                  onClick={() => onJump(index)}
+                  aria-label={`Question ${index + 1}, ${NAME[state]}`}
+                  aria-current={index === session.current ? 'true' : undefined}
+                  className={`flex h-11 w-full items-center justify-center rounded-lg text-sm font-bold ${STYLE[state]}`}>
+                  {index + 1}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <ul className="mt-3 flex shrink-0 flex-wrap gap-x-4 gap-y-1">
         {LEGEND.map(([state, label]) => (
           <li key={state} className="flex items-center">
             <span
@@ -67,7 +71,7 @@ export default function QuestionPalette({
       <button
         type="button"
         onClick={onSubmit}
-        className="mt-4 w-full rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-700">
+        className="mt-4 w-full shrink-0 rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-700">
         {isPractice ? 'Finish practice' : 'Submit test'}
       </button>
     </div>

@@ -55,7 +55,7 @@ Rules that keep the port cheap and the two apps in step:
 | Push notifications | Firebase Cloud Messaging web SDK + service worker | **to add** in W12 |
 | Voice in | Web Speech API `SpeechRecognition` (`hi-IN` / `en-IN`; Chrome/Edge/Safari only) | browser built-in |
 | Voice out | `window.speechSynthesis` | browser built-in |
-| Photo / OMR capture | `<input type="file" accept="image/*" capture>` + `getUserMedia` for a live frame; `react-easy-crop` for cropping | **to add** |
+| Photo / OMR capture | `<input type="file" accept="image/*" capture>` + `getUserMedia` for a live frame (later, W11); `react-easy-crop` for cropping | file chooser + crop installed |
 | Network status | `navigator.onLine` + `online` / `offline` events | built-in |
 | Forms | plain controlled inputs and the copied validators (as mobile); `react-hook-form` + `zod` only if a form grows | optional |
 | Tests | Vitest + React Testing Library + jsdom (mobile used Jest + react-test-renderer) | installed |

@@ -467,66 +467,61 @@ Mobile files for this phase:
 
 ---
 
-## W7 — Ask AI tutor (6–7 days)
+## W7 — Ask AI tutor (6–7 days) — **done**, see notes at the end of this section
 
 Ports mobile Phase 5. Mock services; the AI key never in the bundle.
 
-- [ ] Route `/ask` with `?topicId=` and `?q=` deep links (replaces `route.params`)
-- [ ] Chat: bubbles, typing indicator, **Markdown** (`react-markdown`, safe by default), copy, thumbs up/down, conversation history (drawer, 20 chats, persisted), retry row for failed replies, quick-prompt chips, empty state
-- [ ] Quota chip ("8/10 left today"); at 0 → upgrade dialog; 429 maps to the same dialog; `ensureOnline` guard
-- [ ] **Photo doubt:** file picker + camera capture + crop (`react-easy-crop`) + preview sheet + optional note, compressed to 1600 px / JPEG 0.8
-- [ ] **Voice:** Web Speech API with live transcript, language toggle (Hindi / English), TTS toggle and stop. Feature-detect and hide the mic with a tooltip in unsupported browsers (Firefox)
-- [ ] "Ask epadh.ai" entry from topic detail, and from each reviewed question on practice / mock result pages (mobile 5D)
-- [ ] Known gap carried over: same button on the **live** practice explanation (mobile 5D open item) — do it here
-- [ ] Port: `aiTutor.test.js`, `askAiChat` integration test
+- [x] Route `/ask` with `?topicId=` `&topicName=` `&q=` deep links, and router state `{ topicId, topicName, initialPrompt }` for long prompts. The question is removed from the address once it is sent, so a reload never asks it twice
+- [x] Chat: bubbles, typing indicator, **markdown** (`react-markdown`, no raw HTML, links open in a new tab), copy, thumbs up / down, conversation history (sheet, 20 chats, persisted), retry row for a failed reply, quick-prompt chips, empty state, delete chat (with confirmation), Enter sends / Shift+Enter adds a line
+- [x] Quota chip ("8/10 left today"); at 0 → an upgrade dialog (Not now / See Pro → `/membership?feature=ai`); a server 429 shows the same dialog; `ensureOnline` guard on text, photo and voice
+- [x] **Photo doubt:** file chooser (a phone is offered Camera or Gallery, a laptop goes straight to files), paste a screenshot into the box, crop dialog (`react-easy-crop`), preview sheet with an optional note, compressed to 1600 px / JPEG 0.8
+- [x] **Voice:** Web Speech API with a live transcript, Hindi / English toggle, editable text before sending, "Send"; the mic is disabled with an explanation in a browser without speech recognition. **Spoken replies:** speaker toggle with stop, long answers read in pieces
+- [x] "Ask epadh.ai" entry from the topic page's Ask tab and from each reviewed question on the result page
+- [x] The open mobile item: the same button on the **live** practice explanation (after answering, with the question, the student's choice and the right answer)
+- [x] Port: `aiTutor.test.js` (W1), `askAiChat` → `tests/integration/askAiChat.test.jsx` (46 tests)
 
 Mobile files for this phase:
 
-**Copy as is (pure JS)** (8)
+**Copy as is (pure JS)** (8) — done in W1; web changes below
 
-*aiTutor*
-
-- [x] `features/aiTutor/hooks/usePhotoDoubt.js`
-- [x] `features/aiTutor/hooks/useVoiceInput.js`
-- [x] `features/aiTutor/services/aiTutorService.js`
-- [x] `features/aiTutor/services/doubtService.js`
-- [x] `features/aiTutor/store/aiTutorSlice.js`
-- [x] `features/aiTutor/utils/questionPrompt.js`
-- [x] `features/aiTutor/utils/quickPrompts.js`
-
-*store*
-
-- [x] `store/selectors/aiTutorSelectors.js`
+- [x] `features/aiTutor/hooks/usePhotoDoubt.js` (adds `addFile` for pasted photos, stores the small thumbnail in the message)
+- [x] `features/aiTutor/hooks/useVoiceInput.js` (adds `supported`, `onEnd`, browser wording; removes a ref write during render)
+- [x] `features/aiTutor/services/aiTutorService.js` (429 → quota message), `services/doubtService.js` (browser `FormData` with a Blob, 429 → quota message)
+- [x] `features/aiTutor/store/aiTutorSlice.js` (a reply goes to the chat it was asked in), `utils/questionPrompt.js`, `utils/quickPrompts.js`
+- [x] `store/selectors/aiTutorSelectors.js` (the chat list is memoized)
 
 **Adapt (native module → web API, same exports)** (3)
 
-*aiTutor*
-
-- [ ] `features/aiTutor/services/ttsService.js` — replace `react-native-tts`
-- [ ] `features/aiTutor/services/voiceService.js` — replace `react-native`, `@react-native-voice/voice`
-
-*services*
-
-- [ ] `services/media/photoPicker.js` — replace `react-native-image-crop-picker`
+- [x] `features/aiTutor/services/ttsService.js` — `react-native-tts` → `speechSynthesis`
+- [x] `features/aiTutor/services/voiceService.js` — `@react-native-voice/voice` → Web Speech API
+- [x] `services/media/photoPicker.js` — `react-native-image-crop-picker` → file chooser + crop dialog + canvas (also serves OMR and the profile photo)
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (13)
 
-- [x] `features/aiTutor/components/AskAiQuestionButton.jsx` (done in W5)
-- [ ] `features/aiTutor/components/ChatBubble.jsx`
-- [ ] `features/aiTutor/components/ChatComposer.jsx`
-- [ ] `features/aiTutor/components/ConversationHistorySheet.jsx`
-- [ ] `features/aiTutor/components/EmptyChatState.jsx`
-- [ ] `features/aiTutor/components/MessageText.jsx`
-- [ ] `features/aiTutor/components/PhotoPreviewSheet.jsx`
-- [ ] `features/aiTutor/components/QuickPromptChips.jsx`
-- [ ] `features/aiTutor/components/QuotaChip.jsx`
-- [ ] `features/aiTutor/components/RetryRow.jsx`
-- [ ] `features/aiTutor/components/TypingBubble.jsx`
-- [ ] `features/aiTutor/components/VoiceOverlay.jsx`
-- [ ] `features/aiTutor/screens/AskAiChatScreen.jsx` → `features/aiTutor/pages/AskAiChatPage.jsx`
+- [x] `components/` `AskAiQuestionButton` (W5), `ChatBubble`, `ChatComposer`, `ConversationHistorySheet`, `EmptyChatState`, `MessageText`, `PhotoPreviewSheet`, `QuickPromptChips`, `QuotaChip`, `RetryRow`, `TypingBubble`, `VoiceOverlay`
+- [x] `screens/AskAiChatScreen.jsx` → `pages/AskAiChatPage.jsx`
 
+**New on the web:** `services/media/{imageTools, filePicker, cropRequests, imageRegistry}.js`, `components/feedback/CropDialog.jsx`, `app/CropHost.jsx`.
 
-**Done when:** a Free user can chat, send a photo, use voice (where supported), hit the daily limit and see the upgrade dialog; the same page works on a phone-sized browser.
+**Done when:** a Free user can chat, send a photo, use voice (where supported), hit the daily limit and see the upgrade dialog; the same page works on a phone-sized browser. (Met in tests and in a real browser at 393 px and 1280 px, dev server and production bundle: a quick prompt gets a formatted answer, a typed question is sent, a photo goes through file chooser → crop → preview → reply, a reload keeps the chat and its photo, the voice overlay opens, running out of questions offers Pro. 592 automated tests pass. **Not checked with real sound:** the browser smoke test uses a fake microphone, so actual recognition (Hindi / English accuracy) and actual speech output (voice quality, whether the PC has a Hindi voice) have not been heard.)
+
+**W7 notes and deliberate differences**
+
+- **Bugs found and fixed (three were inherited from mobile):**
+  1. **A reload dropped the chat.** The saved chats survive but "which one is open" does not, so `/ask` opened an empty chat. A cold load now reopens the latest chat for the topic.
+  2. **An AI reply was written to whichever chat was open when it arrived**, not the chat it was asked in: switching chats while waiting put the answer in the wrong chat, and a reply landing after a logout was counted against the next person's daily allowance. Replies now carry their chat id and are dropped if that chat is gone. (Regression tests in `aiTutorReplies.test.js`.)
+  3. **`selectConversationList` built a new array on every call**, re-rendering the page on every store update (React Redux warned about it). It is memoized.
+  4. **First open of a PDF failed once on a fresh `npm run dev`** ("504 Outdated Optimize Dep"): Vite discovered `react-pdf` late and invalidated the rest. `optimizeDeps.include` in `vite.config.js` now lists the lazily loaded packages.
+- **The chat page uses the immersive layout** (no sidebar or tab bar), so the composer sits at the bottom of a full-height page; the header back arrow returns.
+- **Quota prompt is a dialog** (as the plan says). Mobile navigated straight to Membership.
+- **Photos in messages:** a message stores a small thumbnail (about 16 kB data URL) so it survives a reload inside localStorage's size limit. The **full** photo is kept in memory for the upload and for Retry (`services/media/imageRegistry.js`, last 8 photos). After a reload only the thumbnail exists, and that is what a Retry would send.
+- **Camera:** a phone is offered Camera or Gallery (the `capture` attribute opens the camera directly); on a laptop there is only the file chooser. **A live webcam capture with an alignment frame is not built**; it belongs to the OMR scanner (W11).
+- **Cropping** is zoom and move over the picture's own proportions (profile photos are square with a round guide). Dragging free-form edges is not offered.
+- **Voice limits:** Chrome and Edge send the audio to the browser maker's speech service, so listening needs internet (the error says so); Firefox has no speech recognition, so the mic is disabled with a note. The recognizer stops by itself when the speaker pauses, so the overlay flips back to "Start listening".
+- **Spoken replies** read long answers in sentence-sized pieces because Chrome cuts a single utterance after about 15 seconds. Whether a **Hindi voice** exists depends on the operating system; without one the browser's default voice reads the text.
+- **Upload contract (new, to agree with PraharX):** `POST /ai/doubt/photo` is multipart with the field `image` (a JPEG Blob), plus `note`, `examId`, `topicId`; a 429 on `/ai/chat` or `/ai/doubt/photo` means "out of questions".
+- **Bundle:** the chat page is a lazy chunk (144 kB) and the crop dialog another (26 kB), so the main chunk stays about 635 kB (206 kB gzip). Page-level splitting for everything else is W13.
+- **Tests:** the file chooser, microphone, speaker and AI service are replaced by controllable stand-ins in the chat tests; the browser APIs are faked in `aiSpeech.test.js` (35 tests) and `photoPipeline.test.jsx` / `aiRealApi.test.js` (35 tests).
 
 ---
 
