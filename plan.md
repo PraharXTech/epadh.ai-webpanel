@@ -41,15 +41,15 @@ Rules that keep the port cheap and the two apps in step:
 | Framework | React 19 + Vite 8, JavaScript (`.js` / `.jsx`), no TypeScript | installed |
 | Routing | `react-router-dom` v7 (data router: `createBrowserRouter`) | installed |
 | State | `@reduxjs/toolkit` + `react-redux` | installed |
-| State persistence | `redux-persist` with `localStorage` (mobile used AsyncStorage) | **to add** |
+| State persistence | `redux-persist` with `localStorage` (mobile used AsyncStorage) | installed |
 | Toasts | `react-hot-toast` (replaces `AlertHost` / `CustomAlert` for transient messages) | installed |
 | Styling | Tailwind CSS v4 via `@tailwindcss/vite` (mobile used NativeWind on Tailwind 3) | installed |
-| Icons | `lucide-react` (mobile used `lucide-react-native`, same icon names) | **to add** |
-| HTTP | `axios` with the same interceptors and refresh queue | **to add** |
+| Icons | `lucide-react` (mobile used `lucide-react-native`, same icon names) | installed |
+| HTTP | `axios` with the same interceptors and refresh queue | installed |
 | Path alias | `@/…` → `src/…` (vite + jsconfig) | done |
-| Markdown in AI answers | `react-markdown` (mobile has a custom `MessageText`; markdown is simpler on web) | **to add** |
+| Markdown in AI answers | `react-markdown` (mobile has a custom `MessageText`; markdown is simpler on web) | installed |
 | PDF viewer | `react-pdf` (pdf.js) or the browser's own `<iframe>` viewer | **to add** (decide in W4) |
-| HTML study material | `dompurify` + `dangerouslySetInnerHTML` (mobile used `react-native-render-html`) | **to add** |
+| HTML study material | `dompurify` + `dangerouslySetInnerHTML` (mobile used `react-native-render-html`) | installed |
 | Video | native `<video>` (HLS via `hls.js` only if the backend serves HLS) | none / later |
 | Payments | Razorpay Checkout.js (web) | **to add** in W9 |
 | Push notifications | Firebase Cloud Messaging web SDK + service worker | **to add** in W12 |
@@ -58,8 +58,8 @@ Rules that keep the port cheap and the two apps in step:
 | Photo / OMR capture | `<input type="file" accept="image/*" capture>` + `getUserMedia` for a live frame; `react-easy-crop` for cropping | **to add** |
 | Network status | `navigator.onLine` + `online` / `offline` events | built-in |
 | Forms | plain controlled inputs and the copied validators (as mobile); `react-hook-form` + `zod` only if a form grows | optional |
-| Tests | Vitest + React Testing Library + jsdom (mobile used Jest + react-test-renderer) | **to add** |
-| Lint / format | ESLint 10 (installed), Prettier + `prettier-plugin-tailwindcss` | Prettier **to add** |
+| Tests | Vitest + React Testing Library + jsdom (mobile used Jest + react-test-renderer) | installed |
+| Lint / format | ESLint 10 (installed), Prettier + `prettier-plugin-tailwindcss` | installed |
 
 The AI provider key, Razorpay secret and every other secret **never live in the web bundle**. Everything goes through the backend (same rule as mobile).
 

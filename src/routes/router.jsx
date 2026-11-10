@@ -1,4 +1,6 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import ScreenLoader from '@/components/common/ScreenLoader';
 import FocusLayout from '@/layouts/FocusLayout';
 import AppLayout from '@/layouts/AppLayout';
 import PublicLayout from '@/layouts/PublicLayout';
@@ -14,7 +16,27 @@ const ph = (title, mobile, phase) => (
   <PlaceholderPage title={title} mobile={mobile} phase={phase} />
 );
 
+// Dev-only component gallery. `import.meta.env.DEV` is replaced at build time, so the page
+// and its imports are dropped from production bundles.
+const devRoutes = import.meta.env.DEV
+  ? (() => {
+      const UiGalleryPage = lazy(() => import('@/pages/dev/UiGalleryPage'));
+      return [
+        {
+          path: '/dev/ui',
+          element: (
+            <Suspense fallback={<ScreenLoader />}>
+              <UiGalleryPage />
+            </Suspense>
+          ),
+        },
+      ];
+    })()
+  : [];
+
 export const router = createBrowserRouter([
+  ...devRoutes,
+
   // ---- public: no session needed ----
   {
     element: <PublicLayout />,

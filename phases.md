@@ -59,7 +59,7 @@ Goal: a web project that builds and has the right shape.
 
 ## W1 — Platform layer (3–4 days) — **done**, see notes at the end of this section
 
-Ports mobile Phase 0 and the infrastructure half of Phase 1 (1A, 1B). Nothing visible to the student yet except login-less shell and splash.
+Ports mobile Phase 0 and the infrastructure half of Phase 1 (1A, 1B). Nothing visible to the student yet except the splash and the placeholder shell. Packages are installed (axios, redux-persist, lucide-react, dompurify, react-markdown, vitest, testing-library, prettier).
 
 Install: `axios redux-persist lucide-react dompurify react-markdown` and dev `vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom prettier prettier-plugin-tailwindcss`.
 
@@ -132,20 +132,20 @@ Mobile files for this phase:
 - [x] `screens/SplashScreen.jsx` → `pages/SplashPage.jsx`
 
 
-**Done when:** the app boots to a splash, then the public shell, hits a mock API through the real client, a logout in one tab logs out the other, lint + test + build pass in CI. (Met locally: 232 tests pass, lint has 0 errors, build passes. Not done: a hosted CI pipeline file, since there is no repo or host yet;  runs the same three steps.)
+**Done when:** the app boots to a splash, then the public shell, hits a mock API through the real client, a logout in one tab logs out the other, lint + test + build pass in CI. (Met locally: 234 tests pass, lint has 0 errors, build passes. Not done: a hosted CI pipeline file, since there is no repo or host yet; `npm run ci` runs the same three steps.)
 
 **W1 notes and deliberate differences**
 
 - **Copied ahead of schedule:** all 108 pure-JS files were copied in W1 (not only the ones listed above), because copying is free and it let the whole store boot. The per-phase lists still show them under their feature phase, ticked. Their *logic* is untouched; Prettier 3 reflowed 26 of them (formatting only, spot-checked).
-- **Unit tests:** all 25 mobile unit-test files were ported to  (212 tests, all pass). Changes:  is aliased to  in ; Jest-style  calls became ES imports;  checks  instead of the Keychain mock. New web tests: route guards, boot, storage, network, cross-tab logout.
-- **No :** the drawer state lives in , because on the web the hamburger is in the same layout (mobile needed a context to reach the Home header).
-- ** became ** and is rendered by , not by a route.
-- **Every route exists** in  and renders  until its phase lands (see the  shown on each placeholder).
-- **Token storage** is the temporary fallback described in plan.md section 3 (access token in memory, refresh token in ). Revisit before production (open question 2).
+- **Unit tests:** all 25 mobile unit-test files were ported to `src/tests/unit` (212 tests, all pass). Changes: `jest` is aliased to `vi` in `tests/setup.js`; Jest-style `require('@/…')` calls became ES imports; `session.test.js` checks `localStorage` instead of the Keychain mock. New web tests (22): route guards, app boot, token storage, network, cross-tab logout.
+- **No `SidebarProvider`:** the drawer state lives in `AppLayout`, because on the web the hamburger is in the same layout (mobile needed a context to reach the Home header).
+- **`SplashScreen` became `pages/SplashPage.jsx`** and is rendered by `BootGate`, not by a route.
+- **Every route exists** in `routes/router.jsx` and renders `PlaceholderPage` until its phase lands (the `phase` is shown on each placeholder).
+- **Token storage** is the temporary fallback described in plan.md section 3 (access token in memory, refresh token in `localStorage`). Revisit before production (open question 2).
 - **Shared package vs copy:** decided **copy** for now (plan.md section 1).
-- **ESLint:** ,  and  are warnings, not errors, because three copied hooks (, , ) were written for looser mobile lint rules. Fix them when W7, W10 and W11 port those features.
+- **ESLint:** `react-hooks/purity`, `react-hooks/refs` and `react-hooks/set-state-in-effect` are warnings, not errors, because three copied hooks (`plan/hooks.js`, `omr/hooks/useOmrResult.js`, `aiTutor/hooks/useVoiceInput.js`) were written for looser mobile lint rules. Fix them when W10, W11 and W7 port those features. The 3 warnings are the only lint output.
 - **Bundle:** the main chunk is about 520 kB (170 kB gzip) because every slice and the icon set load up front. Route-level code splitting is W13.
-- **Prettier** uses the mobile config (no semicolon change, single quotes, trailing commas) plus the Tailwind class-sorting plugin, so copied and new code look the same.
+- **Prettier** uses the mobile config (single quotes, trailing commas, `arrowParens: avoid`) plus the Tailwind class-sorting plugin, so copied and new code look the same.
 
 ---
 
