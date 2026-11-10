@@ -6,6 +6,10 @@
 import { apiClient } from '@/api/client';
 import { USE_MOCK_API } from '@/config/env';
 
+// What the student is told when the server says they are out of questions (HTTP 429). The chat
+// page recognises this text and opens the upgrade dialog instead of a plain error.
+export const AI_QUOTA_MESSAGE = "You've used all your questions for today.";
+
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const newId = () =>
   `m-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -50,13 +54,17 @@ export const sendMessage = async ({
   lastAiText,
 }) => {
   if (!USE_MOCK_API) {
-    const { data } = await apiClient.post('/ai/chat', {
-      conversationId,
-      examId,
-      topicId,
-      text,
-    });
-    return data;
+    try {
+      const { data } = await apiClient.post('/ai/chat', {
+        conversationId,
+        examId,
+        topicId,
+        text,
+      });
+      return data;
+    } catch (e) {
+      throw e?.response?.status === 429 ? new Error(AI_QUOTA_MESSAGE) : e;
+    }
   }
   await delay(600 + Math.random() * 500);
   const body = QUICK_REPLIES[promptId]

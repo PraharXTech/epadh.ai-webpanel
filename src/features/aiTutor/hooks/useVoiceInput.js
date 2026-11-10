@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { showAlert } from '@/services/alerts/alertStore';
 import {
   cancelListening,
+  isVoiceSupported,
   requestMicPermission,
   startListening,
   stopListening,
@@ -10,16 +11,27 @@ import {
 
 const LOCALES = { hi: 'hi-IN', en: 'en-IN' };
 
-// Drives the voice overlay (plan.md §5.10): ask permission once, listen, show a
-// live transcript, and hand the final text back for the normal send flow to use
-// (a recognised question is sent exactly like a typed one).
+const warn = message =>
+  showAlert('Voice assistant', message, null, { tone: 'warning', icon: 'mic' });
+
+// Drives the voice overlay (plan.md section 5.10): ask permission once, listen, show a live
+// transcript, and hand the final text back for the normal send flow to use (a recognised
+// question is sent exactly like a typed one).
+//
+// Web changes from mobile: a browser may not support speech recognition at all (Firefox), so
+// `supported` lets the UI hide the microphone with an explanation; the recognizer stops by
+// itself when the speaker pauses (`onEnd`); and the permission text points at the browser.
 export default function useVoiceInput() {
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [lang, setLang] = useState('hi');
   const [transcript, setTranscript] = useState('');
   const langRef = useRef(lang);
-  langRef.current = lang;
+  useEffect(() => {
+    langRef.current = lang;
+  });
+
+  const supported = isVoiceSupported();
 
   const begin = useCallback(async overrideLang => {
     setListening(true);
@@ -29,31 +41,27 @@ export default function useVoiceInput() {
         onFinal: setTranscript,
         onError: message => {
           setListening(false);
-          showAlert('Voice assistant', message, null, {
-            tone: 'warning',
-            icon: 'mic',
-          });
+          warn(message);
         },
+        onEnd: () => setListening(false),
       });
     } catch {
       setListening(false);
-      showAlert(
-        'Voice assistant',
-        "Couldn't start listening. Please try again.",
-        null,
-        { tone: 'warning', icon: 'mic' },
-      );
+      warn("Couldn't start listening. Please try again.");
     }
   }, []);
 
   const openOverlay = useCallback(async () => {
+    if (!isVoiceSupported()) {
+      warn(
+        "Voice input isn't supported in this browser. Please use Chrome, Edge or Safari, or type your question.",
+      );
+      return;
+    }
     const granted = await requestMicPermission();
     if (!granted) {
-      showAlert(
-        'Voice assistant',
-        'epadh.ai needs microphone permission to hear your question. You can allow it from phone Settings.',
-        null,
-        { tone: 'warning', icon: 'mic' },
+      warn(
+        'epadh.ai needs microphone permission to hear your question. Allow it from the lock icon in the address bar, then try again.',
       );
       return;
     }
@@ -93,8 +101,7 @@ export default function useVoiceInput() {
     }
   }, []);
 
-  // Releases the native listener when the chat screen itself is left, not on every
-  // overlay open/close (the overlay is cheap to reopen within the same screen visit).
+  // Releases the listener when the chat page itself is left, not on every overlay open / close.
   useEffect(() => {
     return () => {
       teardownVoice();
@@ -102,6 +109,7 @@ export default function useVoiceInput() {
   }, []);
 
   return {
+    supported,
     open,
     listening,
     lang,

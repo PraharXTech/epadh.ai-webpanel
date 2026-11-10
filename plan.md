@@ -265,7 +265,7 @@ I compared the mobile `phase.md` against the mobile source. These are marked **d
 | Phase 4E `planStreakReminder` | Not present. Only the generic reminders in `settings/utils/reminders.js`. |
 | Phase 1 / Phase 0 "global error boundary" | Listed as to-do and indeed missing. |
 
-Possible explanations: the work lives in another branch or uncommitted files, or `phase.md` is ahead of the code. **Open question for you:** should the web build these from the plan text (recommended, in W6), and should the mobile app get them too? I treated them as **web work items** in `phases.md` rather than "copy", because there is nothing to copy.
+Possible explanations: the work lives in another branch or uncommitted files, or `phase.md` is ahead of the code. **Open question for you:** should the web build these from the plan text (recommended, in W6), and should the mobile app get them too? I treated them as **web work items** (now built in W6 for the streak, the Streak page and the three Home cards) in `phases.md` rather than "copy", because there is nothing to copy.
 
 Also not on mobile either (carried over as the same TODOs): real Razorpay, FCM, OMR detection / answer review grid / result from server, server-side streak, real chart library, full Hindi string pass.
 

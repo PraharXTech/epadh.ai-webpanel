@@ -13,7 +13,7 @@ export default function PopularExams({ exams }) {
         actionLabel="View All"
         actionTo={PATHS.examSelect}
       />
-      <ul className="grid grid-cols-4 gap-2">
+      <ul className="grid grid-cols-5 gap-2">
         {exams.map(e => (
           <li
             key={e.id}

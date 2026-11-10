@@ -405,78 +405,65 @@ Mobile files for this phase:
 
 ---
 
-## W6 — Home, activity, study tracker and streak (4–5 days)
+## W6 — Home, activity, study tracker and streak (4–5 days) — **done**, see notes at the end of this section
 
-Ports mobile Phase 4 (4A–4E). **Warning:** several Phase 4 items are marked done in mobile `phase.md` but are **not in the mobile code** (plan.md §9). They are built here from the text of mobile `phase.md` 4C–4E, not copied.
+Ports mobile Phase 4 (4A–4E). **Several Phase 4 items are marked done in mobile `phase.md` but are not in the mobile code** (plan.md §9). They were built here from that text, not copied: the streak rules, the Streak page, and the Today's Plan / Study Time / Streak cards on Home.
 
-Present on mobile (port):
-- [ ] Home page: Greeting, Hero banner ("Start Learning" resumes the last activity), Quick actions grid, Preparation progress + ring, Continue Learning, Weak Topics card (Pro teaser for Free), OMR card, Ask card, Popular exams, Motivation banner, skeleton, pull-to-refresh → refresh button + quiet re-fetch when data is > 2 min old
-- [ ] `activity` slice + debounced write; Continue Learning deep-links to topic / material / practice session
-- [ ] `studySessions` slice, `useStudySession` (visibility + idle 45 s + `pagehide` flush), `sessionClock.createClock`, kill recovery → tab-close recovery, sync queue
-- [ ] `useReconnectSync` (queued sessions and pending mock rank sent when `online` fires)
+Present on mobile (ported):
 
-Missing on mobile (build new, from `phase.md` text):
-- [ ] `features/study/utils/streak.js`: day counts at ≥ 10 min or ≥ 1 finished practice set; current, longest, at-risk; unit tests for missed day, same day twice, rollover
-- [ ] `/streak` page: flame, current / longest, today's progress to 10 min, month heatmap, 7-day and 4-week bars, total sessions, 14-day study history grouped by day
-- [ ] Home **Today's Study Plan** card (study / practice / revise = 25 / 15 / 10 min, ticks itself off)
-- [ ] Home **Study Time** card (today vs 60 min target) and **Streak** card
-- [ ] Streak-at-risk reminder at 8 pm: in-tab only for now; real delivery arrives with Web Push in W12
+- [x] Home page: greeting, hero banner ("Start Learning" resumes the last activity, or opens the syllabus), OMR card, quick actions, preparation progress + ring, Continue Learning, Weak Topics (Pro teaser for Free), Popular exams, motivation banner, first-load skeleton, a Refresh button, a quiet re-fetch on arrival when the data is over 2 minutes old
+- [x] `activity` slice + debounced write; Continue Learning deep-links to the topic / the material file / the practice test in progress (or its setup)
+- [x] `studySessions` slice, `useStudySession` (done in W4), `sessionClock`, tab-close recovery, sync queue
+- [x] `useReconnectSync`, now mounted in the app shell (queued study sessions and a mock's pending rank are sent when the browser comes back online)
+
+New on the web (built from the `phase.md` text):
+
+- [x] `features/study/utils/streak.js`: a day counts at ≥ 10 minutes studied or ≥ 1 finished practice set; current, longest, at-risk; calendar, 7-day and 4-week numbers; 14-day history. 24 unit tests: the 10-minute edge (599 s no, 600 s yes), a practice set alone, several sessions in a day, a missed day, the same day twice, the at-risk day, midnight rollover, longest vs current, month / year boundaries, leap day
+- [x] `/streak` page: flame, current and longest run, today's progress toward 10 minutes, month calendar (previous / next month), 7-day and 4-week bars, days studied / sessions / total time, 14 days of sessions grouped by day with the topic or material name
+- [x] Home **Today's Study Plan** card: reuses the Plan feature's `usePlan()` (study 25 / practice 15 / mock 30 minutes today), each task ticks itself off from real activity and opens its page; empty state links to the syllabus
+- [x] Home **Study Time** card (minutes today against the daily goal, default 60) and **Streak** card (days, and a hint: "Study 6 more min today to keep it" when the run is at risk)
+- [ ] Streak-at-risk reminder at 8 pm: nothing yet. Browsers cannot schedule reminders for a closed page, so it arrives with Web Push in W12 (the in-tab version was judged not worth building alone)
 
 Mobile files for this phase:
 
-**Copy as is (pure JS)** (13)
+**Copy as is (pure JS)** (13) — all done in W1; two web changes: `useHome` and `useContinueLearning` take no `navigation` argument any more (see notes)
 
-*activity*
+*activity* `hooks/useContinueLearning.js` (web version), `services/activityService.js`, `store/activitySlice.js` · *home* `hooks/useHome.js` (web version), `services/homeService.js`, `store/homeSlice.js` · *hooks* `hooks/useReconnectSync.js` · *store* `selectors/activitySelectors.js`, `homeSelectors.js`, `studySelectors.js` · *study* `services/studyService.js`, `store/studySlice.js`, `utils/sessionClock.js`
 
-- [x] `features/activity/hooks/useContinueLearning.js`
-- [x] `features/activity/services/activityService.js`
-- [x] `features/activity/store/activitySlice.js`
-
-*home*
-
-- [x] `features/home/hooks/useHome.js`
-- [x] `features/home/services/homeService.js`
-- [x] `features/home/store/homeSlice.js`
-
-*hooks*
-
-- [x] `hooks/useReconnectSync.js`
-
-*store*
-
-- [x] `store/selectors/activitySelectors.js`
-- [x] `store/selectors/homeSelectors.js`
-- [x] `store/selectors/studySelectors.js`
-
-*study*
-
-- [x] `features/study/services/studyService.js`
-- [x] `features/study/store/studySlice.js`
-- [x] `features/study/utils/sessionClock.js`
+- [x] all 13
 
 **Adapt (native module → web API, same exports)** (1)
 
-- [x] `features/study/hooks/useStudySession.js` — replace `react-native` (done in W4)
+- [x] `features/study/hooks/useStudySession.js` (done in W4)
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (14)
 
-- [ ] `features/home/components/AskAiButton.jsx`
-- [ ] `features/home/components/ContinueLearning.jsx`
-- [ ] `features/home/components/GreetingSection.jsx`
-- [ ] `features/home/components/HeroBanner.jsx`
-- [ ] `features/home/components/HomeHeader.jsx`
-- [ ] `features/home/components/HomeSkeleton.jsx`
-- [ ] `features/home/components/MotivationBanner.jsx`
-- [ ] `features/home/components/OmrScannerCard.jsx`
-- [ ] `features/home/components/PopularExams.jsx`
-- [ ] `features/home/components/PreparationProgress.jsx`
-- [ ] `features/home/components/ProgressRing.jsx`
-- [ ] `features/home/components/QuickActions.jsx`
-- [ ] `features/home/components/WeakTopicsCard.jsx`
-- [ ] `features/home/screens/HomeScreen.jsx` → `features/home/pages/HomePage.jsx`
+- [x] `features/home/components/` `AskAiButton`, `ContinueLearning`, `GreetingSection`, `HeroBanner`, `HomeSkeleton`, `MotivationBanner`, `OmrScannerCard`, `PopularExams`, `PreparationProgress`, `QuickActions`, `WeakTopicsCard`
+- [x] `features/home/components/ProgressRing.jsx` → the shared `components/charts/Ring` (built in W2), no separate file
+- [x] `features/home/components/HomeHeader.jsx` → not ported: the logo, menu and bell live in the app's `TopBar` (W1), which now shows the unread count
+- [x] `features/home/screens/HomeScreen.jsx` → `features/home/pages/HomePage.jsx`
 
+**New on the web:** `features/home/components/{StudyPlanCard, StudyTimeCard, StreakCard}.jsx`, `features/study/{utils/streak.js, hooks/useStreak.js, hooks/useStudyHistory.js, components/StreakHeatmap.jsx, pages/StreakPage.jsx}`, `features/plan/utils/taskLinks.js`, `hooks/useToday.js`, `store/selectors/streakSelectors.js`, `tests/utils/study.js`.
 
-**Done when:** Home matches the proposal's dashboard list in the plan's order, works offline from cache, updates after study or practice, Continue resumes to the exact place, and the streak is right across a week of mixed use.
+**Done when:** Home matches the proposal's dashboard list in the plan's order, works offline from cache, updates after study or practice, Continue resumes to the exact place, and the streak is right across a week of mixed use. (Met in tests and in a real browser at 393 px and 1280 px, dev server and production bundle: Home shows its cards in order without sideways scrolling, today's practice set starts a streak, the Streak page shows the calendar. Seeded data gave the expected numbers: 4-day run with a gap, 25 of 60 minutes, 6 history rows with the 20-day-old session left out. 472 automated tests pass. Not checked: a real week of use, and the streak across a real midnight in a browser; the midnight rollover is covered by fake-timer tests.)
+
+**W6 notes and deliberate differences**
+
+- **Three bugs found while building, all fixed:**
+  1. **`useHome` sent its first request twice.** Two effects each decided to load before either could see the other's result. Found by the ported loading tests. There is now one place that decides.
+  2. **Home was wider than a phone screen**, clipping the banner and the OMR card. A CSS grid's single column grows to fit its widest child unless it is `minmax(0, 1fr)` (`grid-cols-1`). Found by a screenshot; the browser smoke test now checks for sideways scrolling on Home and Streak.
+  3. **A silent background refresh marked the page busy** and spun the Refresh icon. Only a user-triggered refresh does that now, as on mobile.
+- **Date rolls over by itself.** `hooks/useToday.js` changes "today" at midnight while the page is open, and when a hidden tab is shown again after a night. Mobile only moved on at the next study activity or refresh (its documented limit).
+- **Home layout:** one column on phones in the plan's order; from 1024 px the cards pair up two to a row (progress / plan, time and streak / continue, weak topics / popular exams).
+- **The plan card uses `usePlan()`**, not a second rule set, so Home and the Plan page (W10) can never disagree. The 25 / 15 / 10 minute split in `phase.md` is not what the existing planner produces (it gives study 25, practice 15, mock 30 and revise when a topic is done); the existing planner wins.
+- **Streak counts practice sets, not mock tests, as a "set".** Time in a timed test or mock still counts as study minutes, because those sessions are tracked. Thresholds (10 minutes, 1 set) are the `phase.md` suggestion, still to confirm with PraharX.
+- **Local time, not IST.** Days follow the browser's clock until the server computes the streak (a visitor can change their clock, so the server must own it).
+- **Floating Ask button is not draggable.** Mobile let you move it so it never covers content; on the web it is a small fixed link, and dragging would break keyboard use.
+- **Popular exams:** "View All" opens the exam picker (it did nothing on mobile); the tiles are not links, as on mobile.
+- **Bell badge** moved to the `TopBar` and the unread count is fetched once when the logged-in shell loads, instead of in Home.
+- **Images:** the hero banner (1.9 MB) and the Ask icon (1.5 MB) are now WebP (30 kB and 12 kB).
+- **Bundle:** main chunk about 667 kB (217 kB gzip). The PDF viewer is a separate lazy chunk. Page-level splitting is W13.
+- **Test notes:** `tests/utils/study.js` records a finished session at any day and time through the real actions; the shared store means Home tests reset it with `logout()` where a counted day would leak.
 
 ---
 

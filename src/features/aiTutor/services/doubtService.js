@@ -4,6 +4,8 @@
 // flow in the chat UI until that endpoint exists.
 import { apiClient } from '@/api/client';
 import { USE_MOCK_API } from '@/config/env';
+import { recallImage } from '@/services/media/imageRegistry';
+import { AI_QUOTA_MESSAGE } from './aiTutorService';
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const newId = () =>
@@ -17,12 +19,12 @@ export const analyzeDoubtPhoto = async ({
   topicName,
 }) => {
   if (!USE_MOCK_API) {
+    // WEB CHANGE: a browser FormData takes a Blob, not the React Native { uri, name, type }.
+    // The full-size photo is remembered in memory; after a reload only the small thumbnail the
+    // message saved is left, which is what gets sent then.
+    const image = recallImage(imageUri) ?? (await (await fetch(imageUri)).blob());
     const form = new FormData();
-    form.append('image', {
-      uri: imageUri,
-      name: 'doubt.jpg',
-      type: 'image/jpeg',
-    });
+    form.append('image', image, 'doubt.jpg');
     if (note) {
       form.append('note', note);
     }
@@ -32,10 +34,13 @@ export const analyzeDoubtPhoto = async ({
     if (topicId) {
       form.append('topicId', topicId);
     }
-    const { data } = await apiClient.post('/ai/doubt/photo', form, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return data;
+    // (no Content-Type header: the browser adds multipart/form-data with its boundary)
+    try {
+      const { data } = await apiClient.post('/ai/doubt/photo', form);
+      return data;
+    } catch (e) {
+      throw e?.response?.status === 429 ? new Error(AI_QUOTA_MESSAGE) : e;
+    }
   }
 
   await delay(1100 + Math.random() * 700);
