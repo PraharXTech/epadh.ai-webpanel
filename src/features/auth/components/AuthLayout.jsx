@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import useGoBack from '@/hooks/useGoBack';
 import AppIcon from '@/components/common/AppIcon';
 import BrandLogo from '@/components/common/BrandLogo';
 import OfflineBanner from '@/components/common/OfflineBanner';
@@ -12,12 +12,8 @@ import { PATHS } from '@/routes/routePaths';
 // The banner is 1206 x 1305, so its height is 1.082 x its width; the content starts at 60%
 // of the width (= about 56% of the height).
 export default function AuthLayout({ children, showBack = false }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   // A direct visit to /login/otp has no history to go back to: go to the login page.
-  const goBack = () =>
-    location.key === 'default' ? navigate(PATHS.login) : navigate(-1);
+  const goBack = useGoBack(PATHS.login);
 
   return (
     <div
@@ -45,7 +41,7 @@ export default function AuthLayout({ children, showBack = false }) {
       {showBack ? (
         <button
           type="button"
-          onClick={goBack}
+          onClick={() => goBack()}
           aria-label="Go back"
           className="absolute top-4 left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 hover:bg-white">
           <AppIcon name="arrow-left" color="#0f172a" size={20} />

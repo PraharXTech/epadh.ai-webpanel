@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import useGoBack from '@/hooks/useGoBack';
 import AppIcon from '@/components/common/AppIcon';
 import Button from '@/components/ui/Button';
 import { PATHS } from '@/routes/routePaths';
@@ -27,8 +28,6 @@ export default function OtpPage() {
 
 function OtpForm({ mobile }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const status = useSelector(selectAuthStatus);
   const authError = useSelector(selectAuthError);
   const { seconds, restart } = useCountdown(OTP_RESEND_SECONDS);
@@ -69,8 +68,7 @@ function OtpForm({ mobile }) {
   };
 
   // "Change" returns to the login page (history back, or a fresh visit to /login).
-  const changeNumber = () =>
-    location.key === 'default' ? navigate(PATHS.login) : navigate(-1);
+  const changeNumber = useGoBack(PATHS.login);
 
   return (
     <AuthLayout showBack>
@@ -82,7 +80,7 @@ function OtpForm({ mobile }) {
         <span className="text-sm font-bold text-slate-900">+91 {mobile}</span>
         <button
           type="button"
-          onClick={changeNumber}
+          onClick={() => changeNumber()}
           className="ml-3 text-sm font-semibold text-blue-600 hover:underline">
           Change
         </button>

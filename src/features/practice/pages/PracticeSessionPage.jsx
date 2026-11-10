@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Navigate,
-  useBlocker,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { Navigate, useBlocker, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import useGoBack from '@/hooks/useGoBack';
 import AppIcon from '@/components/common/AppIcon';
 import { recordActivity } from '@/features/activity/store/activitySlice';
 import BottomSheet from '@/features/material/components/BottomSheet';
@@ -56,7 +52,6 @@ const isTyping = target =>
 export default function PracticeSessionPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const session = useSelector(selectPracticeSession);
   const bookmarks = useSelector(selectQuestionBookmarks);
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -192,10 +187,8 @@ export default function PracticeSessionPage() {
     );
   };
 
-  const goBack = () =>
-    location.key === 'default'
-      ? navigate(PATHS.topic(session.topicId))
-      : navigate(-1);
+  const back = useGoBack(PATHS.tests);
+  const goBack = () => back(PATHS.topic(session.topicId));
 
   // Keyboard shortcuts. The handler reads the latest state through a ref so the listener is
   // added only once.

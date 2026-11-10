@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import useGoBack from '@/hooks/useGoBack';
 import AppIcon from '@/components/common/AppIcon';
 import BrandLogo from '@/components/common/BrandLogo';
 import ScreenLoader from '@/components/common/ScreenLoader';
@@ -29,7 +29,7 @@ import { loadExams } from '../store/examSlice';
 // the first one is their primary exam.
 export default function ExamSelectionPage({ changing = false }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const goBack = useGoBack();
   const exams = useSelector(selectExams);
   const examsStatus = useSelector(selectExamsStatus);
   const examsError = useSelector(selectExamsError);
@@ -63,7 +63,7 @@ export default function ExamSelectionPage({ changing = false }) {
     const result = await dispatch(chooseExam({ examIds: selectedIds }));
     // First run: the route guard sends the student Home by itself once an exam is set.
     if (chooseExam.fulfilled.match(result) && changing) {
-      navigate(-1);
+      goBack();
     }
   };
 
@@ -78,7 +78,7 @@ export default function ExamSelectionPage({ changing = false }) {
           {changing ? (
             <button
               type="button"
-              onClick={() => navigate(-1)}
+              onClick={() => goBack()}
               aria-label="Back"
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white hover:bg-slate-100">
               <AppIcon name="arrow-left" color="#0f172a" size={20} />

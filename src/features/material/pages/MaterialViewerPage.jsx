@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import useGoBack from '@/hooks/useGoBack';
 import AppIcon from '@/components/common/AppIcon';
 import ScreenLoader from '@/components/common/ScreenLoader';
 import { recordActivity } from '@/features/activity/store/activitySlice';
@@ -73,8 +74,6 @@ export default function MaterialViewerPage() {
 // reader (with a text size control), everything else (notes, PYQs, practice sets) is a PDF.
 function Viewer({ itemId, item }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const subject = useSelector(selectMaterialSubjects).find(
     s => s.id === item.subjectId,
   );
@@ -111,10 +110,9 @@ function Viewer({ itemId, item }) {
   }, [dispatch, topicId, itemId]);
 
   // Back goes one step; opened directly (no history) it goes to the topic, or the list.
-  const goBack = () =>
-    location.key === 'default'
-      ? navigate(topicId ? PATHS.topic(topicId) : PATHS.studyMaterial)
-      : navigate(-1);
+  const goBack = useGoBack(
+    topicId ? PATHS.topic(topicId) : PATHS.studyMaterial,
+  );
 
   const html = isHtml(item);
 
@@ -168,7 +166,7 @@ function Viewer({ itemId, item }) {
       <header className="flex items-center border-b border-slate-100 px-4 py-2">
         <button
           type="button"
-          onClick={goBack}
+          onClick={() => goBack()}
           aria-label="Go back"
           className="rounded-full p-2 hover:bg-slate-100">
           <AppIcon name="arrow-left" color="#0f172a" size={22} />

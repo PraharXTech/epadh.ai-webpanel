@@ -45,7 +45,7 @@ export default function QuestionPalette({
                 type="button"
                 onClick={() => onJump(index)}
                 aria-label={`Question ${index + 1}, ${NAME[state]}`}
-                aria-current={state === 'current' ? 'true' : undefined}
+                aria-current={index === session.current ? 'true' : undefined}
                 className={`flex h-11 w-full items-center justify-center rounded-lg text-sm font-bold ${STYLE[state]}`}>
                 {index + 1}
               </button>

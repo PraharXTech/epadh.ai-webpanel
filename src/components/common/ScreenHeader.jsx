@@ -1,17 +1,12 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { PATHS } from '@/routes/routePaths';
+import useGoBack from '@/hooks/useGoBack';
 import AppIcon from './AppIcon';
 
 // Back arrow + title (+ optional subtitle and a right-hand action) for pushed pages.
-// Back goes one step in history; when the page was opened directly (a shared link, a
-// reload on a deep URL) there is no history, so it goes Home instead of leaving the site.
+// Back goes one step in history; when there is no page of the app behind (a shared link, a
+// reload on a deep URL) it goes Home instead of leaving the site (hooks/useGoBack.js).
 export default function ScreenHeader({ title, subtitle, onBack, right }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const goBack =
-    onBack ??
-    (() => (location.key === 'default' ? navigate(PATHS.home) : navigate(-1)));
+  const back = useGoBack();
+  const goBack = onBack ?? (() => back());
 
   return (
     <div className="flex items-center px-4 pt-2 pb-3">

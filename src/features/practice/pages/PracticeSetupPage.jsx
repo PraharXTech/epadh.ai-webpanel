@@ -276,7 +276,7 @@ export default function PracticeSetupPage() {
         ) : null}
       </div>
 
-      <div className="sticky bottom-0 border-t border-slate-200 bg-white px-4 pt-3 pb-4">
+      <div className="sticky bottom-[calc(3.5rem+env(safe-area-inset-bottom))] border-t border-slate-200 bg-white px-4 pt-3 pb-4 lg:bottom-0">
         {limitReached ? (
           <Button
             size="lg"

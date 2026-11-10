@@ -143,6 +143,75 @@ const journey = async (label, width, height) => {
     .waitFor({ timeout: 8000 });
   check(`${label}: deep link to a topic works after a reload`, true);
 
+  // ---- W5: practice test (keyboard answer, leave guard, reload resume, result, timed test)
+  await page.goto(BASE + '/practice/t-percentage', {
+    waitUntil: 'networkidle',
+  });
+  await page.getByRole('button', { name: /Start practice/ }).click();
+  await page.getByText(/Question 1 of/).waitFor({ timeout: 8000 });
+  await page.keyboard.press('2');
+  const explained = await page
+    .getByText(/Correct!|Not quite/)
+    .waitFor({ timeout: 3000 })
+    .then(
+      () => true,
+      () => false,
+    );
+  check(`${label}: a keyboard answer shows its explanation`, explained);
+
+  await page.getByRole('button', { name: 'Leave test' }).click();
+  const prompted = await page
+    .getByRole('dialog', { name: 'Leave this test?' })
+    .waitFor({ timeout: 3000 })
+    .then(
+      () => true,
+      () => false,
+    );
+  check(`${label}: leaving asks first`, prompted);
+  await page.getByRole('button', { name: 'Stay' }).click();
+
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.getByText(/Question 1 of/).waitFor({ timeout: 8000 });
+  check(
+    `${label}: a reload mid-test resumes it`,
+    page.url().endsWith('/practice/session'),
+  );
+
+  const lastIndex = 10;
+  for (let i = 1; i < lastIndex; i += 1) {
+    await page
+      .getByRole('button', { name: /Next|Skip/ })
+      .first()
+      .click();
+  }
+  await page.getByRole('button', { name: 'Finish', exact: true }).click();
+  const confirm = page.getByRole('dialog', { name: 'Finish practice?' });
+  await confirm.waitFor({ timeout: 3000 });
+  await confirm.getByRole('button', { name: 'Finish' }).click();
+  await page
+    .getByRole('heading', { name: 'Result' })
+    .waitFor({ timeout: 8000 });
+  check(
+    `${label}: finishing shows the result`,
+    page.url().endsWith('/practice/result'),
+  );
+
+  await page.getByRole('button', { name: 'New test' }).click();
+  await page.getByRole('radio', { name: /Timed test/ }).click();
+  await page.getByRole('radio', { name: '5' }).click();
+  await page.getByRole('button', { name: /Start test/ }).click();
+  const timerText = await page
+    .getByRole('timer')
+    .textContent({ timeout: 8000 })
+    .catch(() => '');
+  check(
+    `${label}: a timed test shows its countdown`,
+    /0[45]:\d\d/.test(timerText),
+    timerText,
+  );
+  await page.getByRole('button', { name: 'Leave test' }).click();
+  await page.getByRole('button', { name: 'Leave' }).click();
+
   // no sideways scrolling
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth,

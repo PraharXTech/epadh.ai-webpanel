@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import useGoBack from '@/hooks/useGoBack';
 import AppIcon from '@/components/common/AppIcon';
 import ScreenHeader from '@/components/common/ScreenHeader';
 import Button from '@/components/ui/Button';
@@ -41,16 +42,13 @@ const Stat = ({ label, value, tint }) => (
 export default function PracticeResultPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const result = useSelector(selectPracticeResult);
   const [filter, setFilter] = useState('all');
 
   // Done goes back to the topic: one step in history, or straight there when the page was
   // opened directly (a reload of the result page has no history).
-  const leave = topicId =>
-    location.key === 'default' && topicId
-      ? navigate(PATHS.topic(topicId), { replace: true })
-      : navigate(-1);
+  const goBack = useGoBack(PATHS.home);
+  const leave = topicId => goBack(topicId ? PATHS.topic(topicId) : PATHS.home);
 
   const done = () => {
     const topicId = result?.topicId;
@@ -191,7 +189,7 @@ export default function PracticeResultPage() {
         </ul>
       )}
 
-      <div className="sticky bottom-0 mt-4 border-t border-slate-200 bg-white px-4 pt-3 pb-4">
+      <div className="sticky bottom-[calc(3.5rem+env(safe-area-inset-bottom))] mt-4 border-t border-slate-200 bg-white px-4 pt-3 pb-4 lg:bottom-0">
         <Button size="lg" fullWidth onClick={done}>
           Done
         </Button>
