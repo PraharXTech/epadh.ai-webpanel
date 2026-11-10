@@ -14,7 +14,7 @@ describe('app boot', () => {
       await screen.findByRole('status', { name: /loading/i }),
     ).toBeInTheDocument();
     expect(
-      await screen.findByRole('heading', { name: 'Login' }, { timeout: 4000 }),
+      await screen.findByRole('heading', { name: 'Welcome Back!' }, { timeout: 4000 }),
     ).toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/login');
   });

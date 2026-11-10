@@ -149,47 +149,60 @@ Mobile files for this phase:
 
 ---
 
-## W2 — Shared UI kit and common components (3–4 days)
+## W2 — Shared UI kit and common components (3–4 days) — **done**, see notes at the end of this section
 
 Ports the mobile `components/` tree and the unfinished mobile Phase 0 "shared UI kit".
 
-- [ ] Build the kit once, then reuse: `Button, Input, Card, Chip, Badge, Avatar, Tabs, Modal, ConfirmDialog, Drawer / BottomSheet, Skeleton, EmptyState, ErrorState, ProgressBar, PageHeader`
-- [ ] `AlertHost` + `CustomAlert` collapse into `ConfirmDialog` + toasts (mobile `customAlert.test.jsx` is ported to the new behaviour)
-- [ ] `FeatureGate` and `usePaywall()` (navigate to `/membership?feature=…`)
-- [ ] `OfflineBanner` wired to `useNetwork`
-- [ ] Icon helper: `AppIcon` maps the mobile string ids (`'home'`, `'file-text'`, `'clipboard-check'`, …) to `lucide-react` components, so copied configs keep working
-- [ ] `components/charts/`: tiny SVG/CSS bar, ring and line components (mobile used plain views, no chart lib)
-- [ ] Storybook is **not** planned; a `/dev/ui` route (dev only) shows every component instead
+- [x] Build the kit once, then reuse: `Button, Card, Chip, Badge, Avatar, Tabs (+ TabPanel), Modal, ConfirmDialog, Skeleton, EmptyState, ErrorState, ProgressBar, ScreenHeader` (the text field is `forms/TextField`, see notes)
+- [x] `AlertHost` + `CustomAlert` collapse into `app/AlertHost` + `components/feedback/ConfirmDialog` + toasts (mobile `customAlert.test.jsx` ported to the new behaviour as `tests/integration/alertHost.test.jsx`)
+- [x] `FeatureGate` and `usePaywall()` (navigates to `/membership?feature=…`)
+- [x] `OfflineBanner` wired to `useNetwork` (done in W1)
+- [x] Icon helper: `AppIcon` maps the mobile string ids to `lucide-react` components (all 75 icons verified to exist)
+- [x] `components/charts/`: `BarChart` and `Ring` (DOM and SVG, no chart library). A line chart is not built; add it in W10 if the Performance page needs one
+- [x] Storybook is **not** planned; the dev-only `/dev/ui` route shows every component instead
+- [ ] Eyeball the `/dev/ui` gallery at 360 / 768 / 1280 px in a real browser (not done: verified by 48 automated tests and by the dev server compiling every module, not by looking at it)
 
 Mobile files for this phase:
 
-**Copy as is (pure JS)** (1)
+**Adapt (not a pure copy after all)** (1)
 
-- [x] `hooks/usePaywall.js`
+- [x] `hooks/usePaywall.js` — the mobile hook took a `navigation` argument, so it was rewritten around `useNavigate()`; it is listed as "copy" in the W1 count only because it has no native import
 
 **Rewrite markup (React Native → DOM + Tailwind, keep the logic)** (13)
 
 *components*
 
-- [ ] `components/common/AlertHost.jsx`
-- [ ] `components/common/AppIcon.jsx`
-- [ ] `components/common/BrandLogo.jsx`
-- [ ] `components/common/CustomAlert.jsx`
-- [ ] `components/common/NoticeBanner.jsx`
-- [ ] `components/common/OfflineBanner.jsx`
-- [ ] `components/common/ProgressBar.jsx`
-- [ ] `components/common/ScreenHeader.jsx`
-- [ ] `components/common/ScreenLoader.jsx`
-- [ ] `components/common/SectionHeader.jsx`
-- [ ] `components/forms/TextField.jsx`
-- [ ] `components/gating/FeatureGate.jsx`
+- [x] `components/common/AlertHost.jsx` → `app/AlertHost.jsx`
+- [x] `components/common/AppIcon.jsx`
+- [x] `components/common/BrandLogo.jsx`
+- [x] `components/common/CustomAlert.jsx` → `components/feedback/ConfirmDialog.jsx`
+- [x] `components/common/NoticeBanner.jsx`
+- [x] `components/common/OfflineBanner.jsx`
+- [x] `components/common/ProgressBar.jsx`
+- [x] `components/common/ScreenHeader.jsx`
+- [x] `components/common/ScreenLoader.jsx`
+- [x] `components/common/SectionHeader.jsx`
+- [x] `components/forms/TextField.jsx`
+- [x] `components/gating/FeatureGate.jsx` (no React Native in it, copied unchanged)
 
 *screens*
 
-- [ ] `screens/PlaceholderScreen.jsx` → `pages/PlaceholderPage.jsx`
+- [x] `screens/PlaceholderScreen.jsx` → `pages/PlaceholderPage.jsx` (done in W1)
 
+**New on the web (no mobile equivalent):** `components/ui/{Button, Card, Chip, Badge, Avatar, Tabs, Modal}.jsx`, `components/feedback/{EmptyState, ErrorState, Skeleton}.jsx`, `components/charts/{BarChart, Ring}.jsx`, `pages/dev/UiGalleryPage.jsx`.
 
-**Done when:** a dev-only UI gallery page shows every component in light layout at 360 / 768 / 1280 px, with keyboard focus visible and dialogs trapping focus.
+**Done when:** a dev-only UI gallery page shows every component in light layout at 360 / 768 / 1280 px, with keyboard focus visible and dialogs trapping focus. (Dialog focus trapping, Escape, focus restore, tab keyboard navigation and ARIA wiring are covered by tests. The three-width visual check is the one open item above.)
+
+**W2 notes and deliberate differences**
+
+- **One text input, `forms/TextField`:** the plan listed both `ui/Input` and `TextField`. They are the same thing, so there is only `TextField`. It requires a `label` (visible, or `hideLabel` for screen readers only), wires `aria-invalid` / `aria-describedby` to the error text, and takes `type="password"` for the show/hide toggle (mobile used `secureTextEntry`).
+- **`PageHeader` is `ScreenHeader`:** same name as mobile. Back goes one step in history, or Home when the page was opened directly (no history).
+- **`BottomSheet` / `Drawer` are `Modal` with a `placement`** (`center`, `bottom`, `right`). `bottom` is a sheet on phones and a centered dialog from 640 px up. The W4 material sheets reuse it.
+- **Alerts:** a plain notice (one OK button, nothing to run) is now a **toast**; only a real choice opens a `ConfirmDialog`. `showAlert()` callers do not change.
+- **`Modal` is hand-rolled** (portal, focus trap, Escape, scroll lock, focus restore) instead of the native `<dialog>`, because jsdom does not implement `showModal()` and the tests need to run.
+- **`usePaywall()` has no `navigation` argument** any more.
+- **Test setup** now stubs `matchMedia` (jsdom lacks it; `react-hot-toast` calls it).
+- **Bundle size** is unchanged (about 521 kB / 171 kB gzip): the gallery is behind `import.meta.env.DEV` and is not in the production build.
 
 ---
 

@@ -43,7 +43,14 @@ export const verifyOtp = async ({ mobile, otp }) => {
   return mockSession(mobile);
 };
 
-export const loginWithGoogle = async () => {
+// WEB CHANGE: the real branch takes the Google ID token that Google Identity Services hands
+// the page (the mobile app has no real Google sign-in yet). The mock ignores it.
+//   loginWithGoogle -> POST /auth/google { idToken } -> same session shape as verifyOtp
+export const loginWithGoogle = async ({ idToken } = {}) => {
+  if (!USE_MOCK_API) {
+    const { data } = await apiClient.post(AUTH_ENDPOINTS.google, { idToken });
+    return data;
+  }
   await delay();
   return mockSession(null);
 };

@@ -167,10 +167,10 @@ src/
 │   ├── common/        AppIcon, BrandLogo, NoticeBanner, OfflineBanner, ProgressBar, SectionHeader, ScreenLoader (→ PageLoader) …
 │   ├── forms/         TextField
 │   ├── gating/        FeatureGate
-│   ├── layout/        AppLayout, FocusLayout, Sidebar, TopBar, BottomBar, PageHeader
+│   ├── layout/        Sidebar, TopBar, BottomBar, sidebarItems
 │   ├── charts/        small SVG/CSS charts (web-only folder)
-│   ├── feedback/      Modal, ConfirmDialog, Skeleton, EmptyState, ErrorState, ErrorBoundary (web-only folder)
-│   └── ui/            Button, Input, Card, Chip, Badge, Avatar, Tabs, Drawer/BottomSheet
+│   ├── feedback/      ConfirmDialog, Skeleton, EmptyState, ErrorState, ErrorBoundary (web-only folder)
+│   └── ui/            Button, Card, Chip, Badge, Avatar, Tabs, Modal (center / bottom sheet / side drawer)
 ├── config/            brand.js, env.js
 ├── constants/
 ├── features/          activity, aiTutor, analytics, auth, exams, history, home, legal, material,

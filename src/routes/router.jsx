@@ -4,6 +4,9 @@ import ScreenLoader from '@/components/common/ScreenLoader';
 import FocusLayout from '@/layouts/FocusLayout';
 import AppLayout from '@/layouts/AppLayout';
 import PublicLayout from '@/layouts/PublicLayout';
+import ExamSelectionPage from '@/features/exams/pages/ExamSelectionPage';
+import LoginPage from '@/features/auth/pages/LoginPage';
+import OtpPage from '@/features/auth/pages/OtpPage';
 import NotFoundPage from '@/pages/public/NotFoundPage';
 import PlaceholderPage from '@/pages/PlaceholderPage';
 import { OnboardingOnly, PublicOnly, RequireAuth, RequireExam } from './guards';
@@ -49,13 +52,15 @@ export const router = createBrowserRouter([
         path: PATHS.privacy,
         element: ph('Privacy Policy', 'PrivacyScreen', 'W12'),
       },
-      {
-        element: <PublicOnly />,
-        children: [
-          { path: PATHS.login, element: ph('Login', 'LoginScreen', 'W3') },
-          { path: PATHS.otp, element: ph('Enter OTP', 'OtpScreen', 'W3') },
-        ],
-      },
+    ],
+  },
+
+  // login / OTP bring their own full-bleed layout (banner + card)
+  {
+    element: <PublicOnly />,
+    children: [
+      { path: PATHS.login, element: <LoginPage /> },
+      { path: PATHS.otp, element: <OtpPage /> },
     ],
   },
 
@@ -69,7 +74,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: PATHS.onboardingExam,
-            element: ph('Choose your exam', 'ExamOnboarding', 'W3'),
+            element: <ExamSelectionPage />,
           },
         ],
       },
@@ -82,10 +87,6 @@ export const router = createBrowserRouter([
             element: <AppLayout />,
             children: [
               { path: PATHS.home, element: ph('Home', 'HomeScreen', 'W6') },
-              {
-                path: PATHS.examSelect,
-                element: ph('Change exam', 'ExamSelectionScreen', 'W3'),
-              },
               {
                 path: PATHS.syllabus,
                 element: ph('Syllabus', 'SubjectListScreen', 'W4'),
@@ -226,6 +227,10 @@ export const router = createBrowserRouter([
           {
             element: <FocusLayout />,
             children: [
+              {
+                path: PATHS.examSelect,
+                element: <ExamSelectionPage changing />,
+              },
               {
                 path: PATTERNS.material,
                 element: ph('Material', 'MaterialViewerScreen', 'W4'),
