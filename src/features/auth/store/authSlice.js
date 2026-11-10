@@ -3,6 +3,7 @@ import { getErrorMessage } from '@/api/client';
 import { clearTokens, saveTokens } from '@/services/storage/secureStorage';
 import {
   loginWithGoogle,
+  revokeSession,
   sendOtp as sendOtpRequest,
   verifyOtp as verifyOtpRequest,
 } from '../services/authService';
@@ -88,6 +89,7 @@ export const { logout, sessionRestored, bootstrapFinished, clearAuthError } =
   authSlice.actions;
 
 export const logoutUser = () => async dispatch => {
+  await revokeSession(); // web: needs the token, so it goes before clearTokens
   await clearTokens();
   dispatch(logout());
 };

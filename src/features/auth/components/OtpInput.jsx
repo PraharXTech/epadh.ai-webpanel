@@ -3,6 +3,8 @@ import { useRef } from 'react';
 // Six visible boxes over ONE real input, so paste, browser / phone SMS autofill
 // (autocomplete="one-time-code") and screen readers all work without per-box focus code.
 // The input is transparent and stretched over the boxes, so a click anywhere focuses it.
+// No maxLength attribute on purpose: the browser would cut a pasted "482 915" to 6
+// characters BEFORE the spaces are stripped, losing a digit. onChange does the limiting.
 export default function OtpInput({
   value,
   onChange,
@@ -42,7 +44,6 @@ export default function OtpInput({
         type="text"
         inputMode="numeric"
         pattern="[0-9]*"
-        maxLength={length}
         autoFocus
         autoComplete="one-time-code"
         aria-label={`${length}-digit verification code`}

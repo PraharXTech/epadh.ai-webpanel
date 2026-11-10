@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '@/App';
 import { logout } from '@/features/auth/store/authSlice';
+import { clearTokens } from '@/services/storage/secureStorage';
 import { router } from '@/routes/router';
 import { store } from '@/store';
 import { selectSelectedExamIds } from '@/store/selectors/userSelectors';
@@ -19,6 +20,8 @@ const boot = async url => {
 
 describe('login, OTP and exam selection', () => {
   beforeEach(async () => {
+    // the token cache lives in memory, so clear it too (the real logout does both)
+    await clearTokens();
     store.dispatch(logout());
     await router.navigate('/login');
   });
@@ -49,7 +52,9 @@ describe('login, OTP and exam selection', () => {
     // the right code logs in; with no exam yet the guard sends the student to onboarding
     await userEvent.clear(code);
     await userEvent.type(code, '123456');
-    await userEvent.click(screen.getByRole('button', { name: /Verify & Login/ }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Verify & Login/ }),
+    );
     expect(
       await screen.findByRole('heading', { name: 'Choose your exams' }, SLOW),
     ).toBeInTheDocument();
@@ -59,43 +64,83 @@ describe('login, OTP and exam selection', () => {
     expect(
       screen.getByRole('button', { name: 'Select at least one exam' }),
     ).toBeDisabled();
-    await userEvent.click(await screen.findByRole('checkbox', { name: /UPSSSC PET/ }, SLOW));
-    await userEvent.click(screen.getByRole('button', { name: 'Continue (1 selected)' }));
+    await userEvent.click(
+      await screen.findByRole('checkbox', { name: /UPSSSC PET/ }, SLOW),
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Continue (1 selected)' }),
+    );
 
     await waitFor(() => expect(router.state.location.pathname).toBe('/'), SLOW);
     expect(selectSelectedExamIds(store.getState())).toEqual(['pet']);
   }, 30000);
 
-  it('a student who was sent to login from a deep link lands back on it', async () => {
-    // already logged in with an exam, as after a previous visit
+  it('remembers the deep link a logged-out student opened', async () => {
+    // log in and pick an exam first
     await boot('/login');
-    await userEvent.type(await screen.findByLabelText('Mobile number', {}, SLOW), '9876543210');
+    await userEvent.type(
+      await screen.findByLabelText('Mobile number', {}, SLOW),
+      '9876543210',
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Send OTP' }));
-    await userEvent.type(await screen.findByLabelText('6-digit verification code', {}, SLOW), '123456');
-    await userEvent.click(screen.getByRole('button', { name: /Verify & Login/ }));
+    await userEvent.type(
+      await screen.findByLabelText('6-digit verification code', {}, SLOW),
+      '123456',
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: /Verify & Login/ }),
+    );
     await screen.findByRole('heading', { name: 'Choose your exams' }, SLOW);
-    await userEvent.click(await screen.findByRole('checkbox', { name: /SSC GD/ }, SLOW));
-    await userEvent.click(screen.getByRole('button', { name: 'Continue (1 selected)' }));
+    await userEvent.click(
+      await screen.findByRole('checkbox', { name: /SSC GD/ }, SLOW),
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Continue (1 selected)' }),
+    );
     await waitFor(() => expect(router.state.location.pathname).toBe('/'), SLOW);
 
-    // session expires; the student opens a deep link
+    // the session expires: the guard sends the student to login...
     store.dispatch(logout());
+    await waitFor(
+      () => expect(router.state.location.pathname).toBe('/login'),
+      SLOW,
+    );
+
+    // ...and a deep link opened while logged out is remembered for after login
     await router.navigate('/history');
-    await waitFor(() => expect(router.state.location.pathname).toBe('/login'), SLOW);
-    expect(router.state.location.state.from.pathname).toBe('/history');
+    await waitFor(
+      () =>
+        expect(router.state.location.state?.from?.pathname).toBe('/history'),
+      SLOW,
+    );
+    expect(router.state.location.pathname).toBe('/login');
   }, 30000);
 
   it('logs out from onboarding and returns to login', async () => {
     await boot('/login');
-    await userEvent.type(await screen.findByLabelText('Mobile number', {}, SLOW), '9876543210');
+    await userEvent.type(
+      await screen.findByLabelText('Mobile number', {}, SLOW),
+      '9876543210',
+    );
     await userEvent.click(screen.getByRole('button', { name: 'Send OTP' }));
-    await userEvent.type(await screen.findByLabelText('6-digit verification code', {}, SLOW), '123456');
-    await userEvent.click(screen.getByRole('button', { name: /Verify & Login/ }));
+    await userEvent.type(
+      await screen.findByLabelText('6-digit verification code', {}, SLOW),
+      '123456',
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: /Verify & Login/ }),
+    );
     await screen.findByRole('heading', { name: 'Choose your exams' }, SLOW);
 
     await userEvent.click(screen.getByRole('button', { name: 'Log out' }));
-    await userEvent.click(await screen.findByRole('button', { name: 'Log out', hidden: false }, SLOW).then(() => screen.getAllByRole('button', { name: 'Log out' }).at(-1)));
-    await waitFor(() => expect(router.state.location.pathname).toBe('/login'), SLOW);
+    const dialog = await screen.findByRole('dialog');
+    await userEvent.click(
+      within(dialog).getByRole('button', { name: 'Log out' }),
+    );
+    await waitFor(
+      () => expect(router.state.location.pathname).toBe('/login'),
+      SLOW,
+    );
     expect(store.getState().auth.isAuthenticated).toBe(false);
   }, 30000);
 });

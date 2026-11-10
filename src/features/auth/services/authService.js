@@ -54,3 +54,18 @@ export const loginWithGoogle = async ({ idToken } = {}) => {
   await delay();
   return mockSession(null);
 };
+
+// WEB CHANGE (mobile never told the server): best-effort session revoke so a stolen refresh
+// token stops working. Never blocks or fails the logout: offline or an expired session
+// must still log the student out on this device.
+//   revokeSession -> POST /auth/logout
+export const revokeSession = async () => {
+  if (USE_MOCK_API) {
+    return;
+  }
+  try {
+    await apiClient.post(AUTH_ENDPOINTS.logout);
+  } catch {
+    // ignored on purpose, see above
+  }
+};

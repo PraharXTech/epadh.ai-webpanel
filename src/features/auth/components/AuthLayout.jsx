@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import AppIcon from '@/components/common/AppIcon';
 import BrandLogo from '@/components/common/BrandLogo';
 import OfflineBanner from '@/components/common/OfflineBanner';
-import banner from '@/assets/images/authbanner.png';
+import banner from '@/assets/images/authbanner.webp';
 import { PATHS } from '@/routes/routePaths';
 
 // Shared shell for Login / OTP. Phones: banner on top, form card below (like the app).
