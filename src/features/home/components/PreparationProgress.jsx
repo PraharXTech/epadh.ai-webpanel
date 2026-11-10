@@ -55,7 +55,11 @@ export default function PreparationProgress({
         actionTo={detailsTo}
       />
       <div className="flex items-center">
-        <Ring percent={percent} size={88} stroke={10} label="Syllabus completed">
+        <Ring
+          percent={percent}
+          size={88}
+          stroke={10}
+          label="Syllabus completed">
           <span className="text-xl font-bold text-slate-900">{percent}%</span>
         </Ring>
         <div className="ml-4 flex-1">

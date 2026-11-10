@@ -7,6 +7,8 @@ import PublicLayout from '@/layouts/PublicLayout';
 import ExamSelectionPage from '@/features/exams/pages/ExamSelectionPage';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import OtpPage from '@/features/auth/pages/OtpPage';
+import HomePage from '@/features/home/pages/HomePage';
+import StreakPage from '@/features/study/pages/StreakPage';
 import MaterialPage from '@/features/material/pages/MaterialPage';
 import MaterialViewerPage from '@/features/material/pages/MaterialViewerPage';
 import ChapterListPage from '@/features/syllabus/pages/ChapterListPage';
@@ -95,7 +97,7 @@ export const router = createBrowserRouter([
           {
             element: <AppLayout />,
             children: [
-              { path: PATHS.home, element: ph('Home', 'HomeScreen', 'W6') },
+              { path: PATHS.home, element: <HomePage /> },
               { path: PATHS.syllabus, element: <SubjectListPage /> },
               { path: PATTERNS.subject, element: <ChapterListPage /> },
               { path: PATTERNS.chapter, element: <TopicListPage /> },
@@ -156,10 +158,7 @@ export const router = createBrowserRouter([
                 path: PATHS.weakTopics,
                 element: ph('Weak topics', 'WeakTopicsScreen', 'W10'),
               },
-              {
-                path: PATHS.streak,
-                element: ph('Streak', 'not in mobile code', 'W6'),
-              },
+              { path: PATHS.streak, element: <StreakPage /> },
               {
                 path: PATHS.profile,
                 element: ph('Profile', 'ProfileScreen', 'W12'),

@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import AppIcon from '@/components/common/AppIcon';
 import BrandLogo from '@/components/common/BrandLogo';
 import { PATHS } from '@/routes/routePaths';
+import { selectUnreadNotificationCount } from '@/store/selectors/notificationSelectors';
 import { selectProfile } from '@/store/selectors/userSelectors';
 
 export default function TopBar({ onMenu }) {
   const profile = useSelector(selectProfile);
+  const unread = useSelector(selectUnreadNotificationCount);
   const initial = (profile?.name ?? '?').trim().charAt(0).toUpperCase() || '?';
 
   return (
@@ -24,9 +26,18 @@ export default function TopBar({ onMenu }) {
       <div className="flex-1" />
       <Link
         to={PATHS.notifications}
-        aria-label="Notifications"
-        className="rounded-lg p-2 hover:bg-slate-100">
+        aria-label={
+          unread > 0 ? `Notifications, ${unread} unread` : 'Notifications'
+        }
+        className="relative rounded-lg p-2 hover:bg-slate-100">
         <AppIcon name="bell" size={20} />
+        {unread > 0 ? (
+          <span
+            aria-hidden="true"
+            className="absolute top-0.5 right-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+            {unread > 9 ? '9+' : unread}
+          </span>
+        ) : null}
       </Link>
       <Link
         to={PATHS.profile}

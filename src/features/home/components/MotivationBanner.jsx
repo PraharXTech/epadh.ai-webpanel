@@ -6,7 +6,7 @@ export default function MotivationBanner({ message }) {
       <span className="mr-3" aria-hidden="true">
         <AppIcon name="trophy" color="#15803d" size={32} />
       </span>
-      <p className="font-semibold leading-5 text-green-800">{message}</p>
+      <p className="leading-5 font-semibold text-green-800">{message}</p>
     </aside>
   );
 }

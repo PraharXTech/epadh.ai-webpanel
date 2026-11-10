@@ -13,7 +13,7 @@ export default function HeroBanner({ hero, onStart }) {
         alt=""
         width="1200"
         height="446"
-        className="absolute inset-0 h-full w-full object-cover object-right"
+        className="absolute inset-0 h-full w-full object-cover object-center"
       />
       <div className="relative flex h-full flex-col justify-between p-3 sm:p-5">
         <div className="w-3/5">

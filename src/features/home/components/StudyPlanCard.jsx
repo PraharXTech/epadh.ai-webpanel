@@ -60,7 +60,11 @@ export default function StudyPlanCard({ tasks, doneCount, minutes }) {
                     </span>
                     {task.done ? (
                       <span role="img" aria-label="Done">
-                        <AppIcon name="circle-check" size={20} color="#16a34a" />
+                        <AppIcon
+                          name="circle-check"
+                          size={20}
+                          color="#16a34a"
+                        />
                       </span>
                     ) : null}
                   </Link>

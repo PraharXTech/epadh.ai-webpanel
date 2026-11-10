@@ -1,14 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import OfflineBanner from '@/components/common/OfflineBanner';
 import BottomBar from '@/components/layout/BottomBar';
 import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
+import { fetchNotifications } from '@/features/notifications/store/notificationsSlice';
+import useReconnectSync from '@/hooks/useReconnectSync';
 
 // Logged-in shell. >= 1024 px: permanent sidebar. Below: hamburger drawer + bottom tabs.
 // (Replaces the mobile AppStack chrome: SidebarProvider + AppBottomBar + OfflineBanner.)
 export default function AppLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  // Send what was queued offline (study sessions, a mock's rank) when the connection returns.
+  useReconnectSync();
+
+  // So the bell shows what is waiting without opening the list first.
+  useEffect(() => {
+    dispatch(fetchNotifications());
+  }, [dispatch]);
 
   return (
     <div className="flex min-h-dvh bg-slate-50">
