@@ -7,7 +7,7 @@ export default function HeroBanner({ hero, onStart }) {
   return (
     <section
       aria-label="Welcome"
-      className="relative h-[185px] overflow-hidden rounded-3xl bg-sky-100 sm:h-[230px]">
+      className="relative min-h-[210px] overflow-hidden rounded-3xl bg-sky-100 sm:min-h-[230px]">
       <img
         src={banner}
         alt=""
@@ -15,8 +15,8 @@ export default function HeroBanner({ hero, onStart }) {
         height="446"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
-      <div className="relative flex h-full flex-col justify-between p-3 sm:p-5">
-        <div className="w-3/5">
+      <div className="relative flex h-full min-h-[inherit] flex-col justify-between gap-3 p-3 sm:p-5">
+        <div className="w-3/5 sm:max-w-md">
           <p className="inline-flex items-center rounded-full bg-white/80 px-3 py-1 text-[10px] font-medium text-blue-600 sm:text-xs">
             <AppIcon name="sparkles" color="#2563eb" size={12} />
             <span className="ml-1">{hero.badge}</span>

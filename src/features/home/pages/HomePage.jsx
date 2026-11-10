@@ -77,7 +77,7 @@ export default function HomePage() {
         accuracy: t.accuracy,
       }));
 
-  const refreshing = status === 'loading' || status === 'refreshing';
+  const refreshing = status === 'loading'; // a silent background refresh shows nothing
 
   return (
     <div className="mx-auto max-w-6xl pb-28 lg:pb-10" aria-busy={refreshing}>

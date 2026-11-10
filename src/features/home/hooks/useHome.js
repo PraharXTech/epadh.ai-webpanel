@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { subscribePageVisibility } from '@/services/page/visibility';
 import {
@@ -12,11 +12,10 @@ import { loadHome } from '../store/homeSlice';
 const STALE_AFTER_MS = 2 * 60 * 1000;
 
 // Home data: saved copy first, refreshed in the background. `refresh` is the Refresh button
-// (shows the spinner); coming back to Home refreshes quietly when the data is more than two
-// minutes old.
+// (shows the spinner); arriving at Home, or showing a hidden tab again, refreshes quietly when
+// the data is more than two minutes old (or was never loaded).
 // Web port: mobile refreshed on the screen's `focus` event. A web page is mounted when it is
-// shown, so the same check runs on mount (arriving at Home) and when a hidden tab becomes
-// visible again.
+// shown, so the same check runs on mount and when a hidden tab becomes visible.
 export default function useHome() {
   const dispatch = useDispatch();
   const data = useSelector(selectHomeData);
@@ -26,28 +25,32 @@ export default function useHome() {
 
   const refresh = useCallback(() => dispatch(loadHome()), [dispatch]);
 
+  // The check reads the latest values through a ref, so there is ONE place that decides to
+  // load (two effects deciding separately sent the first request twice).
+  const latest = useRef({ data, status, updatedAt });
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(loadHome({ silent: Boolean(data) }));
+    latest.current = { data, status, updatedAt };
+  });
+
+  const refreshIfNeeded = useCallback(() => {
+    const { data: saved, status: current, updatedAt: at } = latest.current;
+    if (current === 'loading' || current === 'refreshing') {
+      return;
     }
-  }, [status, data, dispatch]);
+    const stale = !at || Date.now() - at > STALE_AFTER_MS;
+    if (current === 'idle' || stale) {
+      dispatch(loadHome({ silent: Boolean(saved) }));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
-    const refreshIfStale = () => {
-      const stale = !updatedAt || Date.now() - updatedAt > STALE_AFTER_MS;
-      if (stale && status !== 'loading' && status !== 'refreshing') {
-        dispatch(loadHome({ silent: Boolean(data) }));
-      }
-    };
-    refreshIfStale(); // arriving at Home
+    refreshIfNeeded(); // arriving at Home
     return subscribePageVisibility(visible => {
       if (visible) {
-        refreshIfStale();
+        refreshIfNeeded();
       }
     });
-    // Arriving only: not on every status change (that would loop on a failed load).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, [refreshIfNeeded]);
 
   return { data, status, error, refresh };
 }

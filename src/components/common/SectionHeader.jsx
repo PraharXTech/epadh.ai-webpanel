@@ -11,7 +11,7 @@ export default function SectionHeader({
 }) {
   const action = actionLabel ? (
     <>
-      <span className="mr-1 text-sm font-semibold text-blue-600">
+      <span className="mr-1 text-sm font-semibold whitespace-nowrap text-blue-600">
         {actionLabel}
       </span>
       <AppIcon name="arrow-right" color="#2563eb" size={14} />
@@ -22,14 +22,14 @@ export default function SectionHeader({
     <div className="mb-3 flex items-center justify-between">
       <h2 className="text-lg font-bold text-slate-900">{title}</h2>
       {actionTo && action ? (
-        <Link to={actionTo} className="flex items-center">
+        <Link to={actionTo} className="ml-3 flex shrink-0 items-center">
           {action}
         </Link>
       ) : action ? (
         <button
           type="button"
           onClick={onActionPress}
-          className="flex items-center">
+          className="ml-3 flex shrink-0 items-center">
           {action}
         </button>
       ) : null}

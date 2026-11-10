@@ -47,7 +47,9 @@ const journey = async (label, width, height) => {
 
   // a reload keeps the session and the exam
   await page.reload({ waitUntil: 'networkidle' });
-  await page.getByRole('heading', { name: 'Home' }).waitFor({ timeout: 8000 });
+  await page
+    .getByRole('region', { name: 'Welcome' })
+    .waitFor({ timeout: 8000 });
   check(
     `${label}: reload keeps the session`,
     new URL(page.url()).pathname === '/',
@@ -214,6 +216,44 @@ const journey = async (label, width, height) => {
     .getByRole('dialog')
     .getByRole('button', { name: 'Leave', exact: true })
     .click();
+
+  // ---- W6: Home dashboard, study plan / time / streak cards, the Streak page
+  const overflows = () =>
+    page.evaluate(
+      () => document.documentElement.scrollWidth > window.innerWidth,
+    );
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  await page
+    .getByRole('region', { name: "Today's study plan" })
+    .waitFor({ timeout: 8000 });
+  const homeCards = await Promise.all(
+    [
+      page.getByRole('region', { name: 'Your preparation progress' }),
+      page.getByRole('region', { name: 'Continue learning' }),
+      page.getByRole('link', { name: /Study Time/ }),
+      page.getByRole('link', { name: /Streak/ }),
+    ].map(locator => locator.isVisible()),
+  );
+  check(`${label}: Home shows its cards`, homeCards.every(Boolean));
+  check(`${label}: Home does not scroll sideways`, !(await overflows()));
+  // the practice set finished earlier in this run counts as today's study
+  const streakText = await page
+    .getByRole('link', { name: /Streak/ })
+    .innerText();
+  check(
+    `${label}: today's practice set started a streak`,
+    /1\s*day/.test(streakText),
+    streakText.replace(/\s+/g, ' '),
+  );
+  await page.getByRole('link', { name: /Streak/ }).click();
+  await page
+    .getByRole('heading', { name: 'Streak', level: 1 })
+    .waitFor({ timeout: 8000 });
+  const calendar = await page
+    .getByRole('region', { name: 'Study calendar' })
+    .isVisible();
+  check(`${label}: the Streak page shows the calendar`, calendar);
+  check(`${label}: Streak page does not scroll sideways`, !(await overflows()));
 
   // no sideways scrolling
   const overflow = await page.evaluate(
