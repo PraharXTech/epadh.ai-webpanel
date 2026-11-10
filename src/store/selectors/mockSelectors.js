@@ -1,3 +1,5 @@
+import { createSelector } from '@reduxjs/toolkit';
+
 export const selectMockSession = state => state.mock.session;
 export const selectMockResult = state => state.mock.result;
 export const selectMockStartStatus = state => state.mock.startStatus;
@@ -10,14 +12,19 @@ export const selectMockHistory = state => state.mock.history;
 
 // The most recent finished attempt per test (history is newest first), for the
 // "last attempt" progress ring on the Mock Tests list.
-export const selectLastMockAttemptByTest = state => {
-  const map = new Map();
-  state.mock.history.forEach(h => {
-    if (!map.has(h.testId)) {
-      map.set(h.testId, h);
-    }
-  });
-  return map;
-};
+// Web change: memoized. It builds a Map, and a selector that returns a new object on every call
+// makes React Redux warn and re-render the page on every store update.
+export const selectLastMockAttemptByTest = createSelector(
+  [selectMockHistory],
+  history => {
+    const map = new Map();
+    history.forEach(h => {
+      if (!map.has(h.testId)) {
+        map.set(h.testId, h);
+      }
+    });
+    return map;
+  },
+);
 
 export const selectMockTotalAttempted = state => state.mock.history.length;
