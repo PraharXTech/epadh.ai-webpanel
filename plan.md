@@ -41,7 +41,7 @@ Rules that keep the port cheap and the two apps in step:
 | Framework | React 19 + Vite 8, JavaScript (`.js` / `.jsx`), no TypeScript | installed |
 | Routing | `react-router-dom` v7 (data router: `createBrowserRouter`) | installed |
 | State | `@reduxjs/toolkit` + `react-redux` | installed |
-| State persistence | `redux-persist` with `localStorage` (mobile used AsyncStorage) | installed |
+| State persistence | `redux-persist` with a small `localStorage` adapter (`services/storage/persistStorage.js`; mobile used AsyncStorage) | installed |
 | Toasts | `react-hot-toast` (replaces `AlertHost` / `CustomAlert` for transient messages) | installed |
 | Styling | Tailwind CSS v4 via `@tailwindcss/vite` (mobile used NativeWind on Tailwind 3) | installed |
 | Icons | `lucide-react` (mobile used `lucide-react-native`, same icon names) | installed |

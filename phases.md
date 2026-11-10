@@ -69,7 +69,7 @@ Work items:
 - [x] `config/env.js` (adapt), `config/brand.js` (copy, keep `BRAND`, `SUPPORT`, `LEGAL_LAST_UPDATED`)
 - [x] Decide token storage (plan.md §3 / §10 q2) and write `services/storage/secureStorage.js` with the same three exports
 - [x] `api/client.js`: axios instance, bearer interceptor, single-flight refresh queue, `getErrorMessage`, `setSessionExpiredHandler`. Copy the logic, swap storage
-- [x] `store/index.js` with `redux-persist` on localStorage, all slices registered as their phase lands, `serializableCheck` ignored actions kept, **cross-tab logout** via the `storage` event
+- [x] `store/index.js` with `redux-persist` on localStorage (through our own `persistStorage` adapter, see the W3 notes), all slices registered as their phase lands, `serializableCheck` ignored actions kept, **cross-tab logout** via the `storage` event
 - [x] `services/network/network.js` on `navigator.onLine` (same exports); `OfflineBanner` comes in W2
 - [x] Localization: copy `localization/` (`index.js`, `locales/en.js`, `locales/hi.js`), keep the "both files have the same keys" test
 - [x] Toast service: `services/alerts/alertStore.js` kept as a thin wrapper over `react-hot-toast` (`showAlert(title, message, actions, opts)` → toast for info, `ConfirmDialog` for choices). `<Toaster />` mounted once in `app/`
@@ -160,7 +160,7 @@ Ports the mobile `components/` tree and the unfinished mobile Phase 0 "shared UI
 - [x] Icon helper: `AppIcon` maps the mobile string ids to `lucide-react` components (all 75 icons verified to exist)
 - [x] `components/charts/`: `BarChart` and `Ring` (DOM and SVG, no chart library). A line chart is not built; add it in W10 if the Performance page needs one
 - [x] Storybook is **not** planned; the dev-only `/dev/ui` route shows every component instead
-- [ ] Eyeball the `/dev/ui` gallery at 360 / 768 / 1280 px in a real browser (not done: verified by 48 automated tests and by the dev server compiling every module, not by looking at it)
+- [x] Eyeball the `/dev/ui` gallery at 360 / 768 / 1280 px in a real browser (done with Edge: no horizontal scroll at any width, no console errors, the modal keeps Tab inside and returns focus to its button on Escape)
 
 Mobile files for this phase:
 
@@ -191,7 +191,7 @@ Mobile files for this phase:
 
 **New on the web (no mobile equivalent):** `components/ui/{Button, Card, Chip, Badge, Avatar, Tabs, Modal}.jsx`, `components/feedback/{EmptyState, ErrorState, Skeleton}.jsx`, `components/charts/{BarChart, Ring}.jsx`, `pages/dev/UiGalleryPage.jsx`.
 
-**Done when:** a dev-only UI gallery page shows every component in light layout at 360 / 768 / 1280 px, with keyboard focus visible and dialogs trapping focus. (Dialog focus trapping, Escape, focus restore, tab keyboard navigation and ARIA wiring are covered by tests. The three-width visual check is the one open item above.)
+**Done when:** a dev-only UI gallery page shows every component in light layout at 360 / 768 / 1280 px, with keyboard focus visible and dialogs trapping focus. (Met: checked in a real browser, plus 48 automated tests.)
 
 **W2 notes and deliberate differences**
 
@@ -278,10 +278,13 @@ Mobile files for this phase:
 
 **New on the web:** `features/auth/hooks/useGoogleIdentity.js` (loads Google Identity Services), `tests/utils/renderWithRealStore.jsx`.
 
-**Done when:** a new user can sign in with OTP, choose an exam, reload the tab and land on Home; logout wipes everything in all tabs; an expired token refreshes silently. (Met in automated tests with the mock services, 33 new tests. **Not checked in a real browser**: the layout of the login / OTP / exam pages, a real tab reload, and the silent token refresh against a real API.)
+**Done when:** a new user can sign in with OTP, choose an exam, reload the tab and land on Home; logout wipes everything in all tabs; an expired token refreshes silently. (Met in a real browser at 393 px and 1280 px: login → OTP → exam → Home, then a reload keeps the session, with no console errors; also checked on the production build. Cross-tab logout and the logout revoke call are covered by automated tests, not by a two-window browser test. The silent token refresh against a real API is still untested.)
 
 **W3 notes and deliberate differences**
 
+- **Bug found by opening it in a browser (and fixed):** the first build showed a blank page in the browser dev server (`storage.getItem is not a function`). `redux-persist/lib/storage` is CommonJS and its default import arrives as a module wrapper under Vite's browser dev server, while Vitest resolves it fine, so all tests had passed. The store now uses our own `services/storage/persistStorage.js` (an async `localStorage` wrapper with an in-memory fallback). A unit test fails the build if anything imports `redux-persist/lib/storage` again.
+- **Real-browser smoke test added:** `npm run e2e` (`e2e/smoke.mjs`, Playwright driving the Edge or Chrome already installed, no browser download) runs the journey at phone and desktop width and fails on any console error. Start `npm run dev` first. For the production bundle: `VITE_USE_MOCK_API=true npx vite build`, `npx vite preview --port 4173`, then `BASE_URL=http://localhost:4173 npm run e2e` (the normal production env has the mock API off, so the journey cannot log in without that override). This is the seed of the W14 Playwright suite.
+- **Auth layout, checked in the browser:** on phones the whole banner sits behind the content and the form starts where its white wave begins (as on mobile); on desktop the banner fills the left half, scaled so the picture fills the panel. The first version overlapped the logo with the illustration; found by screenshot and fixed.
 - **OTP input is one real `<input>`** with six decorative boxes drawn over it, not six inputs. Paste, SMS autofill and screen readers just work. It has **no `maxLength`** on purpose: a browser would cut a pasted `482 915` to 6 characters before the space is stripped, losing a digit (a test found this).
 - **Direct visit to `/login/otp`** (no number in router state) goes to `/login`. Back and "Change" go one step in history, or to `/login` when there is none.
 - **`/exams/select` is a full page** (no sidebar or tabs), not a modal route as plan.md §4 first said: it has its own sticky Save bar, which would clash with the bottom tab bar.

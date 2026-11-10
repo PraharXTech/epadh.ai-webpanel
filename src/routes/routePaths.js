@@ -1,6 +1,10 @@
 // Single table of every URL in the app (plan.md section 4). Pages and navigation code
 // import from here instead of typing strings, so a path changes in one place.
 // Static paths are strings; paths with params are builder functions.
+// URL segment standing for "every exam the student prepares for" (mobile passed undefined).
+export const ALL_EXAMS = 'all';
+export const examFromParam = param => (param === ALL_EXAMS ? undefined : param);
+
 export const PATHS = {
   // public
   login: '/login',
@@ -20,9 +24,12 @@ export const PATHS = {
   profile: '/profile',
 
   // syllabus drill-down
-  subject: (examId, subjectId) => `/syllabus/${examId}/${subjectId}`,
+  // `examId` is null when the student is looking at all their exams: the URL needs a value,
+  // so it becomes "all" (pages turn it back with examFromParam).
+  subject: (examId, subjectId) =>
+    `/syllabus/${examId ?? ALL_EXAMS}/${subjectId}`,
   chapter: (examId, subjectId, chapterId) =>
-    `/syllabus/${examId}/${subjectId}/${chapterId}`,
+    `/syllabus/${examId ?? ALL_EXAMS}/${subjectId}/${chapterId}`,
   topic: topicId => `/topics/${topicId}`,
   material: itemId => `/material/${itemId}`,
 
