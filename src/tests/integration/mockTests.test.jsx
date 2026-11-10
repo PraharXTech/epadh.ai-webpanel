@@ -95,7 +95,11 @@ describe('mock tests', () => {
           SLOW,
         ),
       ).toBeInTheDocument();
-      const types = screen.getByRole('group', { name: 'Test type' });
+      const types = await screen.findByRole(
+        'group',
+        { name: 'Test type' },
+        SLOW,
+      );
       [
         'All Tests',
         'Full Length',

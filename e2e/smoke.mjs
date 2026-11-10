@@ -360,6 +360,154 @@ const journey = async (label, width, height) => {
   check(`${label}: running out of questions offers Pro`, upgrade);
   await page.keyboard.press('Escape');
 
+  // ---- W8: Tests hub, mock tests (list, instructions, timed session, result), PYQ papers
+  const noSideways = () =>
+    page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    );
+  const acceptDialog = dialog => dialog.accept(); // the "leave this site?" prompt of a reload
+  page.on('dialog', acceptDialog);
+
+  await page.goto(BASE + '/tests', { waitUntil: 'networkidle' });
+  await page.getByText('Recommended for You').waitFor({ timeout: 8000 });
+  check(
+    `${label}: the Tests hub lists tests of every kind`,
+    (await page
+      .getByRole('button', { name: /Quantitative Aptitude Mock Test/ })
+      .count()) > 0 &&
+      (await page.getByRole('button', { name: /Types of Numbers/ }).count()) >
+        0,
+  );
+  check(`${label}: the Tests hub does not scroll sideways`, await noSideways());
+
+  await page.goto(BASE + '/mocks', { waitUntil: 'networkidle' });
+  await page
+    .getByRole('group', { name: 'Test type' })
+    .waitFor({ timeout: 8000 });
+  check(
+    `${label}: the Mock Tests list does not scroll sideways`,
+    await noSideways(),
+  );
+  await page
+    .getByRole('group', { name: 'Test type' })
+    .getByRole('button', { name: /Subject Wise/ })
+    .click();
+  await page.getByRole('button', { name: /Reasoning Mock Test/ }).click();
+  await page.getByRole('button', { name: 'Start test' }).click();
+  await page.getByRole('timer').waitFor({ timeout: 8000 });
+  check(
+    `${label}: a mock test starts with a countdown`,
+    /^\d\d:\d\d$/.test((await page.getByRole('timer').innerText()).trim()),
+  );
+  check(
+    `${label}: the mock session does not scroll sideways`,
+    await noSideways(),
+  );
+
+  // answer with the keyboard, then reload in the middle: the attempt and its answer survive
+  await page.keyboard.press('b');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('c');
+  await page.keyboard.press('m');
+  const closePrompt = await page.evaluate(() => {
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  check(`${label}: closing the tab in a test asks first`, closePrompt);
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.getByText(/Question 2 of 25/).waitFor({ timeout: 8000 });
+  check(
+    `${label}: a reload keeps the attempt, the answer and the mark`,
+    (await page
+      .getByRole('radio', { name: /^C/ })
+      .getAttribute('aria-checked')) === 'true' &&
+      (await page
+        .getByRole('button', { name: 'Marked', exact: true })
+        .count()) === 1,
+  );
+
+  await page.getByRole('button', { name: 'Leave test' }).click();
+  const leaveAsk = await page
+    .getByRole('dialog', { name: 'Leave this test?' })
+    .waitFor({ timeout: 4000 })
+    .then(
+      () => true,
+      () => false,
+    );
+  check(`${label}: leaving a test asks first`, leaveAsk);
+  await page.getByRole('button', { name: 'Stay' }).click();
+
+  // answer the rest and submit through the summary
+  for (let i = 0; i < 23; i += 1) {
+    await page.keyboard.press('a');
+    await page.keyboard.press('ArrowRight');
+  }
+  await page.getByRole('button', { name: 'Submit', exact: true }).click();
+  const summary = page.getByRole('dialog', { name: 'Submit test?' });
+  await summary.waitFor({ timeout: 4000 });
+  check(
+    `${label}: the summary counts answered and marked`,
+    /Answered/.test(await summary.innerText()) &&
+      /Marked/.test(await summary.innerText()),
+  );
+  await summary.getByRole('button', { name: 'Confirm & submit' }).click();
+  await page.waitForURL(/\/mocks\/result$/, { timeout: 8000 });
+  await page.getByText(/Accuracy \d+%/).waitFor({ timeout: 8000 });
+  check(`${label}: submitting opens the result with a score`, true);
+  check(
+    `${label}: a rank or its explanation is shown`,
+    (await page.getByRole('region', { name: 'Rank' }).count()) === 1,
+  );
+  await page.getByRole('button', { name: 'Wrong', exact: true }).click();
+  await page.getByRole('button', { name: 'Unattempted', exact: true }).click();
+  check(`${label}: the result does not scroll sideways`, await noSideways());
+  await page.getByRole('button', { name: 'Done' }).click();
+  await page.waitForURL(url => !/\/mocks\/result$/.test(url.pathname), {
+    timeout: 5000,
+  });
+  check(`${label}: Done leaves the result`, true);
+
+  await page.goto(BASE + '/pyq', { waitUntil: 'networkidle' });
+  await page.getByLabel('Search papers').waitFor({ timeout: 8000 });
+  await page
+    .getByRole('button', { name: 'Open UPSSSC PET 2022 – Shift 1' })
+    .waitFor({ timeout: 8000 });
+  check(
+    `${label}: the papers list does not scroll sideways`,
+    await noSideways(),
+  );
+  await page.getByLabel('Search papers').fill('2019');
+  await page.getByRole('button', { name: 'Open UPSSSC PET 2019' }).click();
+  await page.waitForURL(/\/membership\?feature=advancedMocks/, {
+    timeout: 5000,
+  });
+  check(`${label}: a Pro paper sends a Free student to Membership`, true);
+  await page.goto(BASE + '/pyq', { waitUntil: 'networkidle' });
+  await page
+    .getByRole('button', { name: 'Open UPSSSC PET 2022 – Shift 1' })
+    .click();
+  await page.waitForURL(/\/pyq\/pet-2022-s1$/, { timeout: 5000 });
+  let paperOk = true;
+  try {
+    await page.getByLabel(/Page 1 of \d+/).waitFor({ timeout: 25000 });
+  } catch {
+    paperOk = false;
+  }
+  check(`${label}: a paper opens in the PDF viewer (needs internet)`, paperOk);
+  check(
+    `${label}: the viewer offers the answer key and the mock shortcut`,
+    (await page.getByRole('button', { name: 'Answer key' }).count()) === 1 &&
+      (await page
+        .getByRole('link', { name: 'Attempt this paper as a test' })
+        .count()) === 1,
+  );
+  check(
+    `${label}: the paper viewer does not scroll sideways`,
+    await noSideways(),
+  );
+  page.off('dialog', acceptDialog);
+
   // no sideways scrolling
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth,

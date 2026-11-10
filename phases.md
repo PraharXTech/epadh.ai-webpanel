@@ -525,16 +525,16 @@ Mobile files for this phase:
 
 ---
 
-## W8 — Mock tests, PYQ papers and Tests hub (6–7 days)
+## W8 — Mock tests, PYQ papers and Tests hub (6–7 days) — **done**, see notes at the end of this section
 
 Ports mobile Phase 6 and the "Previous Year Papers" extra.
 
-- [ ] `/tests` hub, `/mocks` list (type filter, recommended, Free/Pro badges, Pro-gated PYQ), `/mocks/:testId` instructions (with the **platform-only rank disclaimer**)
-- [ ] `/mocks/session`: countdown from the server-anchored `endsAt` (`GET /time` offset), palette side panel, section tabs, mark for review, clear, summary dialog before submit, autosave every 5 s with "Offline, will sync", auto-submit at zero, `beforeunload` + router-blocker guard, persisted attempt survives reload
-- [ ] `/mocks/result`: score, negative marking, accuracy, section stats, rank and percentile, "Not enough participants yet" under 30, `pendingRank` queue; solutions with All / Wrong / Unattempted / Marked filters; Ask per solution
-- [ ] `/pyq` and `/pyq/:paperId`: newest first, search, year chips, Saved chip, Viewed tick, Pro lock, PDF viewer with Question paper / Answer key switch, "Attempt as a test" shortcut
-- [ ] **Web additions:** keyboard navigation, optional fullscreen for the session, a warning when the tab loses focus (logged, not punished)
-- [ ] Port: `mockQuestions`, `mockSlice`, `pyq`, `testCatalog` unit tests; `mockTestFlow`, `pyqPapers`, `testsScreen` integration tests
+- [x] `/tests` hub, `/mocks` list (type filter, recommended, Free/Pro badges, Pro-gated PYQ), `/mocks/:testId` instructions (with the **platform-only rank disclaimer**)
+- [x] `/mocks/session`: countdown from the server-anchored `endsAt` (`GET /time` offset), palette side panel, section tabs, mark for review, clear, summary dialog before submit, autosave every 5 s with "Offline, will sync", auto-submit at zero, `beforeunload` + router-blocker guard, persisted attempt survives reload
+- [x] `/mocks/result`: score, negative marking, accuracy, section stats, rank and percentile, "Not enough participants yet" under 30, `pendingRank` queue; solutions with All / Wrong / Unattempted / Marked filters; Ask per solution
+- [x] `/pyq` and `/pyq/:paperId`: newest first, search, year chips, Saved chip, Viewed tick, Pro lock, PDF viewer with Question paper / Answer key switch, "Attempt as a test" shortcut
+- [x] **Web additions:** keyboard navigation, optional fullscreen for the session, a warning when the tab loses focus (logged, not punished)
+- [x] Port: `mockQuestions`, `mockSlice`, `pyq`, `testCatalog` unit tests; `mockTestFlow`, `pyqPapers`, `testsScreen` integration tests
 
 Mobile files for this phase:
 
@@ -568,30 +568,44 @@ Mobile files for this phase:
 
 *mock*
 
-- [ ] `features/mock/components/MetaRow.jsx`
-- [ ] `features/mock/components/MockTestRow.jsx`
-- [ ] `features/mock/components/RecommendedCard.jsx`
-- [ ] `features/mock/screens/MockInstructionsScreen.jsx` → `features/mock/pages/MockInstructionsPage.jsx`
-- [ ] `features/mock/screens/MockResultScreen.jsx` → `features/mock/pages/MockResultPage.jsx`
-- [ ] `features/mock/screens/MockSessionScreen.jsx` → `features/mock/pages/MockSessionPage.jsx`
-- [ ] `features/mock/screens/MockTestsScreen.jsx` → `features/mock/pages/MockTestsPage.jsx`
+- [x] `features/mock/components/MetaRow.jsx`
+- [x] `features/mock/components/MockTestRow.jsx`
+- [x] `features/mock/components/RecommendedCard.jsx`
+- [x] `features/mock/screens/MockInstructionsScreen.jsx` → `features/mock/pages/MockInstructionsPage.jsx`
+- [x] `features/mock/screens/MockResultScreen.jsx` → `features/mock/pages/MockResultPage.jsx`
+- [x] `features/mock/screens/MockSessionScreen.jsx` → `features/mock/pages/MockSessionPage.jsx`
+- [x] `features/mock/screens/MockTestsScreen.jsx` → `features/mock/pages/MockTestsPage.jsx`
 
 *pyq*
 
-- [ ] `features/pyq/components/PaperRow.jsx`
-- [ ] `features/pyq/screens/PyqPapersScreen.jsx` → `features/pyq/pages/PyqPapersPage.jsx`
-- [ ] `features/pyq/screens/PyqViewerScreen.jsx` → `features/pyq/pages/PyqViewerPage.jsx`
+- [x] `features/pyq/components/PaperRow.jsx`
+- [x] `features/pyq/screens/PyqPapersScreen.jsx` → `features/pyq/pages/PyqPapersPage.jsx`
+- [x] `features/pyq/screens/PyqViewerScreen.jsx` → `features/pyq/pages/PyqViewerPage.jsx`
 
 *tests*
 
-- [ ] `features/tests/components/CategoryChips.jsx`
-- [ ] `features/tests/components/TestRow.jsx`
-- [ ] `features/tests/components/TestsHero.jsx`
-- [ ] `features/tests/components/TestsStatsRow.jsx`
-- [ ] `features/tests/screens/TestsScreen.jsx` → `features/tests/pages/TestsPage.jsx`
+- [x] `features/tests/components/CategoryChips.jsx`
+- [x] `features/tests/components/TestRow.jsx`
+- [x] `features/tests/components/TestsHero.jsx`
+- [x] `features/tests/components/TestsStatsRow.jsx`
+- [x] `features/tests/screens/TestsScreen.jsx` → `features/tests/pages/TestsPage.jsx`
 
+**Done when:** a student can attempt a full timed mock (including a PYQ paper), reload mid-test without losing time or answers, submit, and review solutions with rank and percentile. (Met in tests and in a real browser at 393 px and 1280 px, dev server and production bundle: Tests hub, Mock Tests list, a mock started from the list, answered from the keyboard, reloaded in the middle (attempt, answer and mark kept), submitted through the summary, result with score and rank, Pro paper sent to Membership, a paper opened in the PDF viewer. 663 automated tests pass.)
 
-**Done when:** a student can attempt a full timed mock (including a PYQ paper), reload mid-test without losing time or answers, submit, and review solutions with rank and percentile.
+**W8 notes and deliberate differences**
+
+- **Bugs found and fixed:**
+  1. **`selectLastMockAttemptByTest` built a new `Map` on every call** (inherited from mobile), so the list page re-rendered on every store update and React Redux warned. It is memoized with `createSelector`.
+  2. **Mobile navigates to the result before the grading finishes** (`dispatch(submitMock())` is async, so the result screen could open empty for a moment). The session page now waits for the grading, shows a spinner, then opens the result; a second submit (the timer firing while a click is in flight) is ignored.
+  3. **A grid list on a phone grew wider than the screen** (`grid` + `md:grid-cols-2` leaves a content-sized column below 768 px). The list grids now say `grid-cols-1`.
+  4. **The question palette had no way to scroll on a 90-question paper**; only the grid scrolls now, the legend and "Submit test" stay in view (`QuestionPalette` is shared with practice).
+- **Starting a different test while one is in progress** now asks first ("Replace the test in progress?"); mobile replaced it silently.
+- **Session page:** palette beside the question from 1024 px, a sheet on phones; the leave guard, `beforeunload` guard and keyboard (`1`–`5` / `A`–`E`, `←` `→`, `M`) follow the practice session; the countdown reads the server-anchored `endsAt` through `serverNow`, so changing the computer's clock does not move the deadline. **Full screen** is optional (hidden where the browser has none). **Leaving the tab is counted** ("Left tab 2×" in the header and in the submit summary), never penalised.
+- **Result page:** one page for score, section stats, rank and solutions (as on mobile). Done goes back one step, or to Tests when the page was opened directly.
+- **Rank:** the mock leaderboard still has no server; under 30 participants shows "Not enough participants yet", an offline submit shows "Rank on its way" and fills in once a request goes through (`pendingRank`).
+- **PYQ viewer** is in the immersive layout; the PDF viewer loads lazily (pdf.js chunk), so the main chunk grew only about 50 kB (to 694 kB, 220 kB gzip). Papers are public sample PDFs for now, so opening one needs internet access (and, for the real host, CORS).
+- **Tests hub:** `TestsHero` is ported but not shown (mobile has it commented out). The list is two columns from 768 px. The info and rank-tile explanations are toasts (a single OK is a toast on the web).
+- **Tests:** `mockTests.test.jsx` (37: list, instructions, session incl. timer / autosave / guards / keyboard / tab leaves, result incl. rank states), `pyqPapers.test.jsx` (18), `testsPage.test.jsx` (16); the PDF library is replaced by a stand-in in the paper tests, the paper service by a switchable failing one for the retry. Real-browser checks are the W8 block of `e2e/smoke.mjs`.
 
 ---
 

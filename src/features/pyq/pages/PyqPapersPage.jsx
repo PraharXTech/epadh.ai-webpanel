@@ -95,7 +95,7 @@ export default function PyqPapersPage() {
     );
   } else {
     body = (
-      <ul className="grid gap-2 px-4 md:grid-cols-2">
+      <ul className="grid grid-cols-1 gap-2 px-4 md:grid-cols-2">
         {visible.map(paper => (
           <li key={paper.id}>
             <PaperRow

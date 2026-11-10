@@ -277,7 +277,7 @@ export default function TestsPage() {
             No tests match these filters.
           </p>
         ) : (
-          <ul className="grid gap-3 px-4 md:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-3 px-4 md:grid-cols-2">
             {visible.map(row => (
               <li key={row.id}>
                 <TestRow row={row} onPress={openRow} />

@@ -158,7 +158,7 @@ export default function MockTestsPage() {
           <h2 className="text-lg leading-6 font-extrabold text-slate-900">
             Take Mock Tests. Improve Your Score.
           </h2>
-          <ul className="mt-2 flex gap-4">
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
             {HIGHLIGHTS.map(h => (
               <li key={h.icon} className="flex items-center">
                 <span
@@ -195,7 +195,7 @@ export default function MockTestsPage() {
                   <AppIcon name={c.icon} size={16} color={c.color} />
                 </span>
                 <span
-                  className={`mt-1 w-full truncate text-center text-[10px] font-semibold sm:text-xs ${
+                  className={`mt-1 w-full text-center text-[10px] leading-tight font-semibold sm:text-xs ${
                     active ? 'text-white' : 'text-slate-800'
                   }`}>
                   {c.label}
@@ -247,7 +247,7 @@ export default function MockTestsPage() {
             No tests in this category yet.
           </p>
         ) : (
-          <ul className="grid gap-3 px-4 md:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-3 px-4 md:grid-cols-2">
             {list.map(t => (
               <li key={t.id}>
                 <MockTestRow
